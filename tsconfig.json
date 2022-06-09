@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "ES6",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "types": [
+      "node",
+      "kakao.maps.d.ts"
+    ],
+    "sourceMap": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tsconfig.json",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}

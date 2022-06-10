@@ -27,6 +27,7 @@ const Inner = styled.div`
 const Title = styled.div`
   color: ${theme.text};
   font-size: 2rem;
+  cursor: pointer;
 `;
 
 const InfoBox = styled.div`
@@ -34,7 +35,7 @@ const InfoBox = styled.div`
   align-items: center;
 
   button {
-    margin: 0 1rem;
+    margin: 0.5rem;
   }
 `;
 
@@ -92,10 +93,14 @@ const Header = () => {
     navigation('/write');
   };
 
+  const moveHomePage = () => {
+    navigation('/');
+  };
+
   return (
     <Block>
       <Inner>
-        <Title>DeBook</Title>
+        <Title onClick={moveHomePage}>DeBook</Title>
         <InfoBox>
           <RoundButton
             color="blue"

@@ -10,18 +10,10 @@ import RoundButton, { Color } from '../component/common/RoundButton';
 import { theme } from '../style/theme';
 import BookSearchModal from '../component/search/BookSearchModal';
 import AddressModal from '../component/search/AddressModal';
-import { BookInfo } from '../lib/api/party';
+import { BookInfo, registParty, IParty } from '../lib/api/party';
+import { dayObject } from '../lib/date';
 
 const { useState, useMemo, useRef, createRef, useReducer } = React;
-const dayObject = {
-  월: 'mon',
-  화: 'tue',
-  수: 'wed',
-  목: 'thu',
-  금: 'fri',
-  토: 'sat',
-  일: 'sun',
-};
 
 const Block = styled.div`
   width: 775px;
@@ -76,6 +68,8 @@ const RecruitPlanInput = styled.input`
   width: 2rem;
   background: inherit;
   font-size: 1rem;
+  padding-top: 0.2rem;
+
   border-bottom: 1px solid ${theme.boldLine};
   :hover {
     outline: none;
@@ -92,7 +86,7 @@ const WriteArea = styled(ReactQuill)`
 `;
 
 const ButtonArea = styled.div`
-  margin: 2rem 0;
+  margin: 1rem 0;
   display: flex;
   justify-content: center;
 `;
@@ -143,6 +137,19 @@ const dayStateObject: IAvailableDay = {
   sun: { available: false, color: 'gray' },
 };
 
+const WarningMessageArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${theme.persianPink};
+  margin-top: 2rem;
+`;
+
+const SideWarningMessage = styled.h5`
+  color: ${theme.persianPink};
+  margin-left: 1rem;
+`;
+
 const Write = () => {
   const [value, setValue] = useState();
   const [isOnline, setIsOnline] = useState(true);
@@ -150,6 +157,8 @@ const Write = () => {
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [address, setAddress] = useState('');
   const [selectedBook, setBook] = useState<BookInfo>();
+  const [warningMessage, setWarningMessage] = useState('');
+  const [memberWarningeMessage, setMemberWarningeMessage] = useState('');
   const titleRef = createRef<HTMLInputElement>();
   const numberOfRecruitRef = createRef<HTMLInputElement>();
   const locationRef = createRef<HTMLInputElement>();
@@ -213,7 +222,8 @@ const Write = () => {
     'image',
   ];
 
-  const regist = (event) => {
+  const regist = async (event) => {
+    setWarningMessage('');
     const availableDayList = [];
     const dayList = Object.keys(dayStateObject);
 
@@ -222,26 +232,57 @@ const Write = () => {
       if (dayStateObject[day].available) availableDayList.push(day);
     }
     const title = titleRef.current.value;
-    const location = locationRef.current.value;
-    const numberOfRecruit = numberOfRecruitRef.current.value;
+    const numberOfRecruit = Number(numberOfRecruitRef.current.value);
     const description = quillRef.current.value;
+
+    const location = isOnline ? undefined : locationRef.current.value;
 
     // validation
     if (!title) {
-      alert('제목을 입력해주세요');
+      return setWarningMessage('제목을 입력해주세요');
     }
 
     if (title.length > 30) {
-      alert('제목은 30자까지 입력가능합니다');
+      return setWarningMessage('제목은 30자까지 입력가능합니다');
     }
 
     if (!numberOfRecruit) {
-      alert('인원수를 입력해주세요');
+      return setWarningMessage('인원수를 입력해주세요');
     }
 
-    if (!Number(numberOfRecruit)) {
-      alert('숫자로 입력해주세요');
+    if (!numberOfRecruit) {
+      return setWarningMessage('그룹인원을 숫자로 입력해주세요');
     }
+
+    const descriptionRegex = /<[^>]*>?/g;
+    if (!description || description === '') {
+      return setWarningMessage('내용을 입력해주세요');
+    }
+
+    if (description.replace(descriptionRegex, '').trim() === '') {
+      return setWarningMessage('내용을 입력해주세요');
+    }
+
+    const splitAddress = address.split(' ');
+    const [region, city, town] = splitAddress.map((address) => address.trim());
+
+    const party: IParty = {
+      title,
+      numberOfRecruit,
+      isOnline,
+      description,
+      region,
+      city,
+      town,
+    };
+
+    const response = await registParty({
+      party,
+      availableDay: availableDayList,
+      book: selectedBook,
+      userID: 1,
+    });
+    console.log(response);
   };
 
   const modifyAvailableDay = (
@@ -272,6 +313,7 @@ const Write = () => {
   };
 
   const checkLimitNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMemberWarningeMessage('');
     const number = event.currentTarget.value;
     const stringToNumber = Number(number);
 
@@ -279,7 +321,7 @@ const Write = () => {
 
     if (!validateNumber) {
       event.currentTarget.value = '';
-      alert('숫자를 입렵해주세요');
+      return setMemberWarningeMessage('숫자를 입력해주세요');
     }
 
     if (stringToNumber > 6) {
@@ -304,33 +346,10 @@ const Write = () => {
             />
             <h4>/</h4>
             <h4>6</h4>
+            {memberWarningeMessage ? (
+              <SideWarningMessage>{memberWarningeMessage}</SideWarningMessage>
+            ) : null}
           </RecruitPlanArea>
-          <RecruitPlanArea>
-            <h3>그룹 위치</h3>
-            {address ? (
-              <>
-                <h4 ref={locationRef}>{address}</h4>
-                <BiSearch
-                  size="1rem"
-                  style={{ marginLeft: '1rem', cursor: 'pointer' }}
-                  onClick={controlPostcodeModal}
-                />
-              </>
-            ) : (
-              <AddressInput
-                placeholder="동네를 입력해주세요"
-                onClick={controlPostcodeModal}
-              />
-            )}
-          </RecruitPlanArea>
-          {addressModalOpen ? (
-            <AddressModal
-              isOpen={addressModalOpen}
-              setOpen={setAddressModalOpen}
-              currentAddress={address}
-              setCurrentAddress={setAddress}
-            ></AddressModal>
-          ) : null}
           <RecruitPlanArea>
             <h3>가능 요일</h3>
             <RoundButton
@@ -391,6 +410,34 @@ const Write = () => {
               onClick={setOffline}
             />
           </RecruitPlanArea>
+          {isOnline ? null : (
+            <RecruitPlanArea>
+              <h3>그룹 위치</h3>
+              {address ? (
+                <>
+                  <h4 ref={locationRef}>{address}</h4>
+                  <BiSearch
+                    size="1rem"
+                    style={{ marginLeft: '1rem', cursor: 'pointer' }}
+                    onClick={controlPostcodeModal}
+                  />
+                </>
+              ) : (
+                <AddressInput
+                  placeholder="동네를 입력해주세요"
+                  onClick={controlPostcodeModal}
+                />
+              )}
+            </RecruitPlanArea>
+          )}
+          {addressModalOpen ? (
+            <AddressModal
+              isOpen={addressModalOpen}
+              setOpen={setAddressModalOpen}
+              currentAddress={address}
+              setCurrentAddress={setAddress}
+            ></AddressModal>
+          ) : null}
           <RecruitPlanArea>
             <h3>도서 검색</h3>
             <BiSearch
@@ -432,6 +479,9 @@ const Write = () => {
           modules={modules}
           formats={formats}
         ></WriteArea>
+        <WarningMessageArea>
+          <h5>{warningMessage}</h5>
+        </WarningMessageArea>
         <ButtonArea>
           <RoundButton
             size="LARGE"

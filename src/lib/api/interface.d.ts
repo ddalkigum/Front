@@ -32,8 +32,10 @@ export type CheckCertificationResponse = BaseResponse<CheckCertificationResult>;
 // User
 export interface UserProfile {
   id: number;
+  email: string;
   nickname: string;
   profileImage: string;
 }
 
+export type SigninResponse = BaseResponse<UserProfile>;
 export type IGetUserProfile = BaseResponse<UserProfile>;

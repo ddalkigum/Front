@@ -1,5 +1,5 @@
 export const mediaQuery = (maxWidth: number) => {
-  return `@media (max-width: ${maxWidth})`;
+  return `@media (max-width: ${maxWidth}px)`;
 };
 
 export const media = {

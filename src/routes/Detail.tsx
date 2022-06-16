@@ -8,11 +8,13 @@ import DetailPageLayout from '../container/party/DetailLayout';
 const Detail = () => {
   const location = useLocation();
   const [_, nickname, title] = location.pathname.split('/');
+  const decodedNickname = decodeURIComponent(nickname);
+  const decodedTitle = decodeURIComponent(title);
 
   return (
     <MainTemplate>
       <Header></Header>
-      <DetailPageLayout />
+      <DetailPageLayout nickname={decodedNickname} title={decodedTitle} />
     </MainTemplate>
   );
 };

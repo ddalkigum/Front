@@ -42,6 +42,7 @@ const InfoBox = styled.div`
 const ProfileBox = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 
   h4 {
     padding: 0 0.5rem;
@@ -65,7 +66,7 @@ const Header = () => {
   });
 
   const setUserProfile = () => {
-    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
       setUser(currentUser);
       setSafe(true);
@@ -80,9 +81,15 @@ const Header = () => {
     setOpen(true);
   };
 
-  const logout = async () => {
-    const response = await logoutResponse();
+  const clearUserHistory = () => {
+    localStorage.removeItem('currentUser');
     setSafe(false);
+  };
+
+  const logout = async () => {
+    await logoutResponse();
+    clearUserHistory();
+    window.location.reload();
   };
 
   const moveProfilPage = () => {
@@ -90,6 +97,7 @@ const Header = () => {
   };
 
   const moveWritePage = () => {
+    checkLoginResponse();
     navigation('/write');
   };
 
@@ -109,10 +117,18 @@ const Header = () => {
             onClick={moveWritePage}
           />
           {isSafe ? (
-            <ProfileBox onClick={moveProfilPage}>
-              <RoundImage size="DEFAULT" src={user.profileImage}></RoundImage>
-              <h4>{user.nickname}</h4>
-            </ProfileBox>
+            <>
+              <RoundButton
+                color="blue"
+                size="DEFAULT"
+                text="로그아웃"
+                onClick={logout}
+              />
+              <ProfileBox onClick={moveProfilPage}>
+                <RoundImage size="SMALL" src={user.profileImage}></RoundImage>
+                <h4>{user.nickname}</h4>
+              </ProfileBox>
+            </>
           ) : (
             <RoundButton
               color={'blue'}

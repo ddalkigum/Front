@@ -49,8 +49,7 @@ const RelationGroup = () => {
       src: 'http://image.yes24.com/goods/92742567/XL',
       title: '제목은 최대 25글자 지금까지 25글자123',
       createdAt: '2022년 4월 30일',
-      ownerProfileImage:
-        'https://cdn.debook.me/image/party/%EB%94%B8%EA%B8%B0%EA%B2%80/52be9e12-2623-4475-ada6-75c37e8e8ed1',
+      ownerProfileImage: 'https://cdn.debook.me/default/default_user.png',
       ownerNickname: '딸기검',
     },
     {
@@ -58,8 +57,7 @@ const RelationGroup = () => {
       src: 'http://image.yes24.com/goods/92742567/XL',
       title: '제목은 최대 25글자 지금까지 25글자123',
       createdAt: '2022년 4월 30일',
-      ownerProfileImage:
-        'https://cdn.debook.me/image/party/%EB%94%B8%EA%B8%B0%EA%B2%80/52be9e12-2623-4475-ada6-75c37e8e8ed1',
+      ownerProfileImage: 'https://cdn.debook.me/default/default_user.png',
       ownerNickname: '딸기검',
     },
     {
@@ -67,8 +65,7 @@ const RelationGroup = () => {
       src: 'http://image.yes24.com/goods/92742567/XL',
       title: '제목은 최대 25글자 지금까지 25글자123',
       createdAt: '2022년 4월 30일',
-      ownerProfileImage:
-        'https://cdn.debook.me/image/party/%EB%94%B8%EA%B8%B0%EA%B2%80/52be9e12-2623-4475-ada6-75c37e8e8ed1',
+      ownerProfileImage: 'https://cdn.debook.me/default/default_user.png',
       ownerNickname: '딸기검',
     },
     {
@@ -76,8 +73,7 @@ const RelationGroup = () => {
       src: 'http://image.yes24.com/goods/92742567/XL',
       title: '제목',
       createdAt: '2022년 4월 30일',
-      ownerProfileImage:
-        'https://cdn.debook.me/image/party/%EB%94%B8%EA%B8%B0%EA%B2%80/52be9e12-2623-4475-ada6-75c37e8e8ed1',
+      ownerProfileImage: 'https://cdn.debook.me/default/default_user.png',
       ownerNickname: '딸기검',
     },
     {
@@ -85,8 +81,7 @@ const RelationGroup = () => {
       src: 'http://image.yes24.com/goods/92742567/XL',
       title: '제목',
       createdAt: '2022년 4월 30일',
-      ownerProfileImage:
-        'https://cdn.debook.me/image/party/%EB%94%B8%EA%B8%B0%EA%B2%80/52be9e12-2623-4475-ada6-75c37e8e8ed1',
+      ownerProfileImage: 'https://cdn.debook.me/default/default_user.png',
       ownerNickname: '딸기검',
     },
   ];

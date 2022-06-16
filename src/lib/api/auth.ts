@@ -2,6 +2,7 @@ import apiClient from './client';
 import {
   BaseResponse,
   CheckCertificationResponse,
+  SigninResponse,
   SignupResponse,
 } from './interface';
 
@@ -16,6 +17,13 @@ export const sendEmailResponse = async (email: string) => {
 export const checkCertificationCodeResponse = async (code: string) => {
   const response = await apiClient.get<CheckCertificationResponse>(
     `/v1/auth/check?code=${code}`
+  );
+  return response.data;
+};
+
+export const signinResponse = async (code: string) => {
+  const response = await apiClient.get<SigninResponse>(
+    `/v1/auth/signin/email?code=${code}`
   );
   return response.data;
 };

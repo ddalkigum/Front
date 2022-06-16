@@ -1,21 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
 import { theme } from '../../style/theme';
 import Line from '../common/Line';
 import ParticipantInfo from '../common/ParticipantInfo';
 import Tag from '../common/Tag';
 import RoundUserImage from '../common/RoundImage';
+import { MainCard } from '../../container/home/HomeLayout';
+import { convertDateToString } from '../../lib/date';
+import { mediaQuery } from '../../lib/style/media';
 
 const Block = styled.div`
-  width: 24rem;
+  width: 20rem;
   height: 100%;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   cursor: pointer;
-`;
 
-const Image = styled.img`
-  width: 100%;
-  height: 9rem;
+  ${mediaQuery(1440)} {
+    width: calc(50% - 1rem);
+  }
+
+  ${mediaQuery(1056)} {
+    width: calc(50% - 1rem);
+  }
+
+  ${mediaQuery(767)} {
+    width: 100%;
+    margin: 0;
+  }
 `;
 
 const InfoArea = styled.div`
@@ -36,9 +48,17 @@ const BookImage = styled.img`
 `;
 
 const BookInfoArea = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding-left: 0.875rem;
+`;
+
+const BookTitle = styled.h5`
+  width: 90%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 const BookWriter = styled.h6`
@@ -50,6 +70,10 @@ const SubInfoArea = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0rem;
+`;
+
+const AddressArea = styled.div`
+  padding-top: 1rem;
 `;
 
 const Date = styled.h5`
@@ -70,9 +94,9 @@ const AdminInfoArea = styled.div`
 `;
 
 const AdminNickname = styled.h5`
-  font-family: GMarketBold;
   margin-left: 0.5rem;
 `;
+
 interface IBook {
   title: string;
   imageURL: string;
@@ -96,37 +120,43 @@ interface IAdmin {
   nickname: string;
 }
 
-interface IMainCard {
-  party: IParty;
-  book: IBook;
-  admin: IAdmin;
-  participant: IParticipant;
-}
+const PartyCard = ({ party }: { party: MainCard }) => {
+  const navigation = useNavigate();
 
-const PartyCard = () => {
+  const moveDetailPage = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    navigation(`/${party.nickname}/${party.partyTitle}`);
+  };
+
+  const filterURLSlug = (title: string, slug?: string) => {
+    if (slug && slug !== title) {
+      return title.slice(0, title.length - slug.length - 1);
+    }
+    return title;
+  };
+
   return (
-    <Block>
-      <Image
-        src={
-          'https://image.kmib.co.kr/online_image/2021/0903/2021090220380531799_1630582685_0924207731.jpg'
-        }
-      />
+    <Block onClick={moveDetailPage}>
       <InfoArea>
         <TitleArea>
-          <h3>제목입니다</h3>
+          <h3>{filterURLSlug(party.partyTitle, party.slug)}</h3>
         </TitleArea>
         <BookArea>
-          <BookImage
-            src={'http://image.yes24.com/goods/90118480/XL'}
-          ></BookImage>
+          <BookImage src={party.bookThumbnail}></BookImage>
           <BookInfoArea>
-            <h5>이것이 MySQL이다</h5>
-            <BookWriter>우재남</BookWriter>
+            <BookTitle>{party.bookTitle}asdfasdf</BookTitle>
+            <BookWriter>{party.authors}</BookWriter>
           </BookInfoArea>
         </BookArea>
+        <AddressArea>
+          {party.isOnline ? null : (
+            <h5>{`${party.region} ${party.city} ${party.town}`}</h5>
+          )}
+        </AddressArea>
         <SubInfoArea>
-          <Date>2021년 04월 29일</Date>
-          <Tag text={'온라인'}></Tag>
+          <Date>{convertDateToString(party.createdAt)}</Date>
+          <Tag text={party.isOnline ? '온라인' : '오프라인'}></Tag>
         </SubInfoArea>
       </InfoArea>
       <Line />
@@ -134,11 +164,14 @@ const PartyCard = () => {
         <AdminInfoArea>
           <RoundUserImage
             size={'SMALL'}
-            src={'http://image.yes24.com/goods/90118480/XL'}
+            src={party.profileImage}
           ></RoundUserImage>
-          <AdminNickname>nickname</AdminNickname>
+          <AdminNickname>{party.nickname}</AdminNickname>
         </AdminInfoArea>
-        <ParticipantInfo max={4} current={2}></ParticipantInfo>
+        <ParticipantInfo
+          max={party.numberOfRecruit}
+          current={party.numberOfParticipant}
+        ></ParticipantInfo>
       </UserInfoArea>
     </Block>
   );

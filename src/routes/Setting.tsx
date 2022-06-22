@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { currentUser, messageHandler } from '../atom';
+import Header from '../component/base/Header';
 import RoundButton from '../component/common/RoundButton';
 import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
@@ -58,19 +59,6 @@ const Setting = () => {
   const location = useLocation();
   const [user, setUser] = useRecoilState(currentUser);
   const setMessage = useSetRecoilState(messageHandler);
-  const nickname = decodeURIComponent(
-    location.pathname.split('/')[2].replace('@', '')
-  );
-
-  useEffect(() => {
-    if (nickname !== user.nickname) {
-      setMessage({
-        name: 'Forbidden',
-        message: '권한이 없습니다',
-        status: 'error',
-      });
-    }
-  }, []);
 
   return (
     <MainTemplate>

@@ -2,8 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { theme } from '../../style/theme';
 
-const { useState } = React;
-
 const SubjectArea = styled.div`
   margin-top: 5rem;
   margin-bottom: 3rem;
@@ -21,12 +19,6 @@ const SubjectList = styled.h3<{ isActive }>`
           border-bottom: 3px solid ${theme.boldLine};
         `
       : css``}
-`;
-
-const PartyArea = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
 `;
 
 const Subject = ({ subjectList, activeSubjectID, setActiveSubjectID }) => {
@@ -58,4 +50,5 @@ const Subject = ({ subjectList, activeSubjectID, setActiveSubjectID }) => {
     </SubjectArea>
   );
 };
+
 export default Subject;

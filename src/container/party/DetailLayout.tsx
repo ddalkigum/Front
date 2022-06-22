@@ -10,6 +10,7 @@ import RoundImage from '../../component/common/RoundImage';
 import { getKorAvailableDay } from '../../lib/date';
 import {
   getPartyDetail,
+  registNotification,
   requestParticipateResponse,
 } from '../../lib/api/party';
 import { theme } from '../../style/theme';
@@ -181,6 +182,9 @@ const DetailPageLayout = ({ nickname, slug }) => {
       }
       return;
     }
+
+    const res = await registNotification(data.party.id);
+    console.log(res);
 
     setMessage({
       name: 'JoinSuccess',

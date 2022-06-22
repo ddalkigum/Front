@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { currentUser } from '../../atom';
 import { logoutResponse } from '../../lib/api/auth';
 import { theme } from '../../style/theme';
@@ -19,6 +19,15 @@ const categoryList: {
   { id: '3', name: '로그아웃', 'data-index': 'logout' },
 ];
 
+const open = keyframes`
+  0% {
+    transform: translateY(-50%) scale(0.1)
+  }
+  100% {
+    transform: translateY(0) translateY(0) scale(1)
+  }
+`;
+
 const Block = styled.div<{ isOpen }>`
   position: absolute;
   height: fit-content;
@@ -30,6 +39,7 @@ const Block = styled.div<{ isOpen }>`
     props.isOpen
       ? css`
           border: 1px solid ${theme.boldLine};
+          animation: ${open} 0.2s ease-in-out;
         `
       : css`
           border: none;
@@ -66,11 +76,11 @@ const SettingBar = ({ isOpen, user }) => {
   };
 
   const moveSettingPage = () => {
-    navigation(`/setting/@${user.nickname}`);
+    navigation(`/setting`);
   };
 
   const moveRequestPage = () => {
-    navigation(`/notification/@${user.nickname}`);
+    navigation(`/notification`);
   };
 
   const handleClickCategory = async (
@@ -82,10 +92,10 @@ const SettingBar = ({ isOpen, user }) => {
 
     switch (dataIndex) {
       case 'notification':
-        await moveRequestPage();
+        moveRequestPage();
         break;
       case 'logout':
-        await logout();
+        logout();
         break;
       case 'profile':
         moveProfilePage();

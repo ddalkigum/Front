@@ -94,3 +94,15 @@ export const modifyParticipateResponse = async (
     }
   );
 };
+
+export const registNotification = async (partyID: string) => {
+  const response = await apiClient.post('/v1/party/notification', { partyID });
+  return response.data;
+};
+
+export const getUserNotification = async () => {
+  const response = await apiClient.get<BaseResponse<any[]>>(
+    '/v1/party/notification'
+  );
+  return response.data;
+};

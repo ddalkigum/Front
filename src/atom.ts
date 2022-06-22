@@ -5,7 +5,16 @@ export const authModalOpen = atom({
   default: false,
 });
 
-export const isSafeUser = atom({
-  key: 'isSafe',
-  default: false,
+export const currentUser = atom({
+  key: 'currentUser',
+  default: null,
+});
+
+export const messageHandler = atom<{
+  name: string;
+  message: string;
+  status: 'error' | 'success';
+} | null>({
+  key: 'message',
+  default: null,
 });

@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import apiClient from './client';
 import {
   BaseResponse,
@@ -45,9 +46,7 @@ export const signupResponse = async (
 };
 
 export const checkLoginResponse = async () => {
-  const response = await apiClient.get<BaseResponse<string>>(
-    '/v1/auth/check/login'
-  );
+  const response = await apiClient.get<BaseResponse<string>>('/v1/auth/verify');
   return response.data;
 };
 

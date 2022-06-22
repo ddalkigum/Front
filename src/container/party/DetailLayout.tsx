@@ -3,15 +3,20 @@ import styled from 'styled-components';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeReact from 'rehype-react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router';
 import RoundButton from '../../component/common/RoundButton';
 import RoundImage from '../../component/common/RoundImage';
-import RelationGroup from '../../component/realtion/RelationGroup';
 import { getKorAvailableDay } from '../../lib/date';
-import { getPartyDetail } from '../../lib/api/party';
+import {
+  getPartyDetail,
+  requestParticipateResponse,
+} from '../../lib/api/party';
 import { theme } from '../../style/theme';
 import { AvailableDay, Book, Party, User } from '../../types/entity';
 import { mediaQuery } from '../../lib/style/media';
-import PartyCard from '../../component/party/PartyCard';
+import { authModalOpen, currentUser, messageHandler } from '../../atom';
+import { handleAPI } from '../../lib/api/common';
 
 const { useState, useEffect, Fragment, createElement } = React;
 
@@ -55,6 +60,7 @@ const DetailConditionArea = styled.div`
 
 const OwnerProfileArea = styled.div`
   display: flex;
+  width: fit-content;
   align-items: center;
   margin-top: 2rem;
   cursor: pointer;
@@ -106,26 +112,29 @@ export interface PartyParticipant {
 
 export interface PartyDetailResult {
   owner: Pick<User, 'id' | 'nickname' | 'profileImage'>;
-  party: Omit<Party, 'bookID' | 'ownerID'>;
+  party: Omit<Party, 'partyID' | 'ownerID'>;
   book: Book;
   participant: PartyParticipant;
   availableDay: AvailableDay[];
 }
 
-const DetailPageLayout = ({ nickname, title }) => {
+const DetailPageLayout = ({ nickname, slug }) => {
+  const navigation = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [relationIsLoading, setRelationIsLoading] = useState(false);
+  const [isOpen, setOpen] = useRecoilState(authModalOpen);
   const [data, setData] = useState<PartyDetailResult>();
   const [content, setContent] = useState<any>(Fragment);
+  const user = useRecoilValue(currentUser);
+  const setUser = useSetRecoilState(currentUser);
+  const setMessage = useSetRecoilState(messageHandler);
 
   useEffect(() => {
-    getPartyDetail(nickname, title).then(({ result }) => {
-      console.log(result);
+    getPartyDetail(nickname, slug).then(({ result }) => {
       setData(result);
       setIsLoading(true);
       convertStringToHtml(result.party.description);
     });
-
     // TODO: relation group get api client
     // relation group set = true
   }, []);
@@ -138,6 +147,49 @@ const DetailPageLayout = ({ nickname, title }) => {
       .then((file) => {
         setContent(file.result);
       });
+  };
+
+  const joinParty = async () => {
+    if (!user) {
+      return setOpen(true);
+    }
+
+    const response = await handleAPI(
+      requestParticipateResponse(data.party.id, user.id)
+    );
+
+    if (response.status === 'Error') {
+      if (response.result.message === 'AlreadyRequestParticpate') {
+        // 이미 참가 신청한 그룹입니다
+        setMessage({
+          message: '이미 가입신청한 그룹입니다',
+          name: response.result.name,
+          status: 'error',
+        });
+        setTimeout(() => setMessage(null), 1500);
+        return;
+      }
+
+      if (response.result.message === 'NotFound') {
+        setMessage({
+          name: 'NotFound',
+          message: '존재하지 않는 그룹입니다, 홈페이지로 돌아갑니다',
+          status: 'error',
+        });
+        setTimeout(() => setMessage(null), 1500);
+        return;
+      }
+      return;
+    }
+
+    setMessage({
+      name: 'JoinSuccess',
+      message:
+        '참가완료 되었습니다\r\n오픈챗방은 우측 상단 알림페이지에서 확인 가능합니다',
+      status: 'success',
+    });
+
+    setTimeout(() => setMessage(null), 1500);
   };
 
   return (
@@ -187,7 +239,21 @@ const DetailPageLayout = ({ nickname, title }) => {
             </ConditionArea>
             <DescriptionArea>{content}</DescriptionArea>
             <ApplyButtonArea>
-              <RoundButton size="LARGE" color="blue" text="신청하기" />
+              {data.participant.isParticipant ? (
+                <RoundButton
+                  size="LARGE"
+                  color="gray"
+                  text="이미 참여한 그룹입니다"
+                  cursor="default"
+                />
+              ) : (
+                <RoundButton
+                  size="LARGE"
+                  color="blue"
+                  text="참가하기"
+                  onClick={joinParty}
+                />
+              )}
             </ApplyButtonArea>
             <SubTitle>
               <h3>비슷한 그룹</h3>

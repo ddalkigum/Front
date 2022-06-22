@@ -5,9 +5,11 @@ import MainTemplate from '../component/main/MainTemplate';
 import HomeLayout from '../container/home/HomeLayout';
 import { mediaQuery } from '../lib/style/media';
 
+const { useEffect } = React;
+
 const Block = styled.div`
   width: 100%;
-  margin: auto;
+  margin: 5rem auto;
   ${mediaQuery(1919)} {
     width: 1376px;
   }
@@ -22,7 +24,6 @@ const Block = styled.div`
 const Home = (): JSX.Element => {
   return (
     <MainTemplate>
-      <Header></Header>
       <Block>
         <HomeLayout></HomeLayout>
       </Block>

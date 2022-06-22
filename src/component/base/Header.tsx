@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import { useRecoilState } from 'recoil';
+import { BsFillCaretDownFill } from 'react-icons/bs';
 import RoundButton from '../common/RoundButton';
 import { theme } from '../../style/theme';
-import { authModalOpen, isSafeUser } from '../../atom';
-import { checkLoginResponse, logoutResponse } from '../../lib/api/auth';
+import { authModalOpen, currentUser } from '../../atom';
 import RoundImage from '../common/RoundImage';
-import { config } from '../../config';
+import { getUserProfile } from '../../lib/api/user';
+import SettingBar from './SettingBar';
 
 const { useState } = React;
 
@@ -44,33 +45,33 @@ const ProfileBox = styled.div`
   align-items: center;
   cursor: pointer;
 
-  h4 {
+  h5 {
     padding: 0 0.5rem;
   }
 `;
 
-interface CurrentUser {
-  id: number;
-  nickname: string;
-  profileImage: string;
-}
-
-const Header = () => {
+const Header = ({ condition }: { condition?: string }) => {
   const navigation = useNavigate();
   const [isOpen, setOpen] = useRecoilState(authModalOpen);
-  const [isSafe, setSafe] = useRecoilState(isSafeUser);
-  const [user, setUser] = useState<CurrentUser>({
-    id: 0,
-    nickname: '',
-    profileImage: '',
-  });
+  const [user, setUser] = useRecoilState(currentUser);
+  const [SettingBarIsOpen, setSettingBarOpen] = useState(false);
 
-  const setUserProfile = () => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
+  const setUserProfile = async () => {
+    let currentUser;
+    const localStorageUser = localStorage.getItem('currentUser');
+
+    if (!localStorageUser) {
+      currentUser = await getUserProfile();
+      if (currentUser === 'DoesNotExistToken') {
+        return;
+      }
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
       setUser(currentUser);
-      setSafe(true);
+      return;
     }
+
+    currentUser = JSON.parse(localStorageUser);
+    setUser(currentUser);
   };
 
   useEffect(() => {
@@ -81,23 +82,12 @@ const Header = () => {
     setOpen(true);
   };
 
-  const clearUserHistory = () => {
-    localStorage.removeItem('currentUser');
-    setSafe(false);
+  const handleSettingCategory = () => {
+    setSettingBarOpen(!SettingBarIsOpen);
   };
 
-  const logout = async () => {
-    await logoutResponse();
-    clearUserHistory();
-    window.location.reload();
-  };
-
-  const moveProfilPage = () => {
-    navigation(`/${user.nickname}`);
-  };
-
-  const moveWritePage = () => {
-    checkLoginResponse();
+  const moveWritePage = async () => {
+    await setUserProfile();
     navigation('/write');
   };
 
@@ -109,36 +99,34 @@ const Header = () => {
     <Block>
       <Inner>
         <Title onClick={moveHomePage}>DeBook</Title>
-        <InfoBox>
-          <RoundButton
-            color="blue"
-            size="DEFAULT"
-            text="모집하기"
-            onClick={moveWritePage}
-          />
-          {isSafe ? (
-            <>
-              <RoundButton
-                color="blue"
-                size="DEFAULT"
-                text="로그아웃"
-                onClick={logout}
-              />
-              <ProfileBox onClick={moveProfilPage}>
-                <RoundImage size="SMALL" src={user.profileImage}></RoundImage>
-                <h4>{user.nickname}</h4>
-              </ProfileBox>
-            </>
-          ) : (
+        {condition === 'signup' ? null : (
+          <InfoBox>
             <RoundButton
-              color={'blue'}
-              size={'DEFAULT'}
-              text={'로그인'}
-              onClick={openLoginModal}
+              color="blue"
+              size="DEFAULT"
+              text="모집하기"
+              onClick={moveWritePage}
             />
-          )}
-        </InfoBox>
+            {user ? (
+              <>
+                <ProfileBox onClick={handleSettingCategory}>
+                  <RoundImage size="SMALL" src={user.profileImage}></RoundImage>
+                  <h5>{user.nickname}</h5>
+                  <BsFillCaretDownFill color={theme.hoverGray} />
+                </ProfileBox>
+              </>
+            ) : (
+              <RoundButton
+                color={'blue'}
+                size={'DEFAULT'}
+                text={'로그인'}
+                onClick={openLoginModal}
+              />
+            )}
+          </InfoBox>
+        )}
       </Inner>
+      <SettingBar isOpen={SettingBarIsOpen} user={user} />
     </Block>
   );
 };

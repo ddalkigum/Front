@@ -2,6 +2,8 @@ interface ITheme {
   azureRadiance: string;
   lochmara: string;
   malibu: string;
+  white: string;
+  black: string;
   persianPink: string;
   deepBlush: string;
   illusion: string;
@@ -20,6 +22,8 @@ export const theme: ITheme = {
   azureRadiance: '#009AFE',
   lochmara: '#0087DB',
   malibu: '#4EB8FE',
+  white: '#fff',
+  black: '#000',
 
   // Negative
   persianPink: '#F582C6',

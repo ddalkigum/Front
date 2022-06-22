@@ -1,11 +1,17 @@
+import { User } from '../../types/entity';
 import apiClient from './client';
-import { BaseResponse, IGetUserProfile } from './interface';
+import { BaseResponse } from './interface';
 
-export const getUserProfile = async (nickname: string) => {
+export const getUserProfileResponse = async (nickname: string) => {
   const encodedNickname = encodeURIComponent(nickname);
-  const response = await apiClient.get<IGetUserProfile>(
-    `/v1/user/profile/${encodedNickname}}`
+  const response = await apiClient.get<BaseResponse<User>>(
+    `/v1/user/profile/${encodedNickname}`
   );
+  return response.data;
+};
+
+export const getUserProfileByToken = async () => {
+  const response = await apiClient.get<BaseResponse<User>>('/v1/user/current');
   return response.data;
 };
 
@@ -16,4 +22,10 @@ export const secession = async (nickname: string, accessToken: string) => {
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
   return response.data;
+};
+
+export const getUserProfile = async () => {
+  const userResponse = await getUserProfileByToken();
+  const currentUser = userResponse.result;
+  return currentUser;
 };

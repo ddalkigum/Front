@@ -8,6 +8,7 @@ export type Color = 'blue' | 'pink' | 'gray';
 interface RoundButtonBlockProps {
   color: Color;
   size: ButtonSize;
+  cursor?: string;
 }
 
 const RoundButtonBlock = styled.button<RoundButtonBlockProps>`
@@ -46,7 +47,7 @@ const RoundButtonBlock = styled.button<RoundButtonBlockProps>`
   :hover {
     background: ${(props) => buttonColor[props.color].hoverBackground};
     color: ${buttonColor.blue.color};
-    cursor: pointer;
+    cursor: ${(props) => props.cursor ?? 'pointer'};
   }
 `;
 
@@ -59,6 +60,7 @@ interface RoundButtonProps extends ButtonProps {
   size: ButtonSize;
   color: Color;
   text: string;
+  cursor?: string;
 }
 
 const RoundButton: React.FC<RoundButtonProps> = ({
@@ -66,9 +68,15 @@ const RoundButton: React.FC<RoundButtonProps> = ({
   color,
   text,
   onClick,
+  cursor,
 }: RoundButtonProps) => {
   return (
-    <RoundButtonBlock color={color} size={size} onClick={onClick}>
+    <RoundButtonBlock
+      color={color}
+      size={size}
+      onClick={onClick}
+      cursor={cursor}
+    >
       {text}
     </RoundButtonBlock>
   );

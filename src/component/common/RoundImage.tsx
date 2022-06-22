@@ -35,7 +35,7 @@ const Round = styled.img<RoundIconProps>`
   ${(props) =>
     props.size === 'XLARGE' &&
     css`
-      height: 5rem;
+      height: 6rem;
       width: 6rem;
     `}
 

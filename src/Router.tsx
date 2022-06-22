@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NotFound from './component/error/NotFound';
 import Detail from './routes/Detail';
 import Home from './routes/Home';
+import Profile from './routes/Profile';
+import Setting from './routes/Setting';
 import Signin from './routes/Signin';
 import Signup from './routes/Signup';
 import Write from './routes/Write';
@@ -14,7 +17,10 @@ const Router = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/write" element={<Write />} />
-        <Route path="/:nickname/:title" element={<Detail />} />
+        <Route path="/setting/@:nickname" element={<Setting />} />
+        <Route path="/@:nickname/:title" element={<Detail />} />
+        <Route path="/@:nickname" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

@@ -3,7 +3,6 @@ import GlobalStyle from './GlobalStyle';
 import './font.css';
 import Router from './Router';
 import AuthModal from './component/auth/AuthModal';
-import { config } from './config';
 
 const App: React.FC = () => {
   return (

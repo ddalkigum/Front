@@ -85,7 +85,7 @@ const UserInfoArea = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.25rem 1rem;
+  padding: 0.5rem 1rem;
 `;
 
 const AdminInfoArea = styled.div`
@@ -97,55 +97,24 @@ const AdminNickname = styled.h5`
   margin-left: 0.5rem;
 `;
 
-interface IBook {
-  title: string;
-  imageURL: string;
-  writer: string;
-}
-
-interface IParticipant {
-  max: number;
-  current: number;
-}
-
-interface IParty {
-  imageURL: string;
-  title: string;
-  isOnline: boolean;
-  createdAt: string;
-}
-
-interface IAdmin {
-  imageURL: string;
-  nickname: string;
-}
-
 const PartyCard = ({ party }: { party: MainCard }) => {
   const navigation = useNavigate();
-
   const moveDetailPage = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    navigation(`/${party.nickname}/${party.partyTitle}`);
-  };
-
-  const filterURLSlug = (title: string, slug?: string) => {
-    if (slug && slug !== title) {
-      return title.slice(0, title.length - slug.length - 1);
-    }
-    return title;
+    navigation(`/@${party.nickname}/${party.slug}`);
   };
 
   return (
     <Block onClick={moveDetailPage}>
       <InfoArea>
         <TitleArea>
-          <h3>{filterURLSlug(party.partyTitle, party.slug)}</h3>
+          <h3>{party.partyTitle}</h3>
         </TitleArea>
         <BookArea>
           <BookImage src={party.bookThumbnail}></BookImage>
           <BookInfoArea>
-            <BookTitle>{party.bookTitle}asdfasdf</BookTitle>
+            <BookTitle>{party.bookTitle}</BookTitle>
             <BookWriter>{party.authors}</BookWriter>
           </BookInfoArea>
         </BookArea>
@@ -160,19 +129,21 @@ const PartyCard = ({ party }: { party: MainCard }) => {
         </SubInfoArea>
       </InfoArea>
       <Line />
-      <UserInfoArea>
-        <AdminInfoArea>
-          <RoundUserImage
-            size={'SMALL'}
-            src={party.profileImage}
-          ></RoundUserImage>
-          <AdminNickname>{party.nickname}</AdminNickname>
-        </AdminInfoArea>
-        <ParticipantInfo
-          max={party.numberOfRecruit}
-          current={party.numberOfParticipant}
-        ></ParticipantInfo>
-      </UserInfoArea>
+      {party.profileImage ? (
+        <UserInfoArea>
+          <AdminInfoArea>
+            <RoundUserImage
+              size={'SMALL'}
+              src={party.profileImage}
+            ></RoundUserImage>
+            <AdminNickname>{party.nickname}</AdminNickname>
+          </AdminInfoArea>
+          <ParticipantInfo
+            max={party.numberOfRecruit}
+            current={party.numberOfParticipant}
+          ></ParticipantInfo>
+        </UserInfoArea>
+      ) : null}
     </Block>
   );
 };

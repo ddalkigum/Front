@@ -1,4 +1,4 @@
-interface DateTime {
+export interface DateTime {
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +15,8 @@ export interface Party extends DateTime {
   title: string;
   slug: string;
   numberOfRecruit: number;
+  kakaoOpenChatLink: string;
+  kakaoOpenChatPassword: string;
   isOnline: boolean;
   region?: string;
   city?: string;
@@ -22,8 +24,6 @@ export interface Party extends DateTime {
   description: string;
   ownerID: number;
   bookID: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface Participant extends DateTime {

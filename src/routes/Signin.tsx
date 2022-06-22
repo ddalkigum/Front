@@ -16,7 +16,6 @@ const Signin = () => {
     signinResponse(code)
       .then(({ result }) => {
         const { id, email, nickname, profileImage } = result;
-        console.log(result);
         localStorage.setItem(
           'currentUser',
           JSON.stringify({ id, email, nickname, profileImage })

@@ -1,20 +1,18 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import Header from '../component/base/Header';
 import MainTemplate from '../component/main/MainTemplate';
 import DetailPageLayout from '../container/party/DetailLayout';
 
 const Detail = () => {
   const location = useLocation();
-  const [_, nickname, title] = location.pathname.split('/');
-  const decodedNickname = decodeURIComponent(nickname);
-  const decodedTitle = decodeURIComponent(title);
+  const [_, nickname, slug] = location.pathname.split('/');
+  const decodedNickname = decodeURIComponent(nickname.replace('@', ''));
+  const decodedSlug = decodeURIComponent(slug);
 
   return (
     <MainTemplate>
-      <Header></Header>
-      <DetailPageLayout nickname={decodedNickname} title={decodedTitle} />
+      <DetailPageLayout nickname={decodedNickname} slug={decodedSlug} />
     </MainTemplate>
   );
 };

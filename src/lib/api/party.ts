@@ -1,7 +1,8 @@
 import { MainCard } from '../../container/home/HomeLayout';
 import { PartyDetailResult } from '../../container/party/DetailLayout';
-import { Book, Party, User } from '../../types/entity';
+import { Book, DateTime, Party, User } from '../../types/entity';
 import apiClient from './client';
+import { handleAPI } from './common';
 import { BaseResponse } from './interface';
 
 export interface BookMeta {
@@ -25,21 +26,15 @@ export interface SearchBookResult {
 
 export type BookList = BookInfo[];
 
-export interface IParty {
-  title: string;
-  numberOfRecruit: number;
-  isOnline: boolean;
-  description: string;
-  region?: string;
-  city?: string;
-  town?: string;
-}
+export type InsertParty = Omit<
+  Party,
+  'id' | 'slug' | 'bookID' | 'ownerID' | keyof DateTime
+>;
 
-interface PartyContext {
-  party: IParty;
+export interface PartyContext {
+  party: InsertParty;
   availableDay: string[];
   book: BookInfo;
-  userID?: number;
 }
 
 export const getBookList = async (title: string, page: number) => {
@@ -67,4 +62,35 @@ export const getPartyDetail = async (nickname: string, title: string) => {
     `/v1/party/${nickname}/${title}`
   );
   return response.data;
+};
+
+export const getParticipatePartyList = async (userID: number) => {
+  const response = await apiClient.get<BaseResponse<MainCard[]>>(
+    `/v1/party/participate/${userID}`
+  );
+  return response.data;
+};
+
+export const requestParticipateResponse = async (
+  partyID: string,
+  userID?: number
+) => {
+  const response = await apiClient.post<BaseResponse<string>>(
+    '/v1/party/join',
+    { partyID, userID }
+  );
+
+  return response.data;
+};
+
+export const modifyParticipateResponse = async (
+  partyID: string,
+  participateID
+) => {
+  const response = await apiClient.patch<BaseResponse<string>>(
+    '/v1/party/participate',
+    {
+      partyID,
+    }
+  );
 };

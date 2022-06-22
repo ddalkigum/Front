@@ -1,17 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
+import { useSetRecoilState } from 'recoil';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import { BiSearch } from 'react-icons/bi';
 import MainTemplate from '../component/main/MainTemplate';
-import Header from '../component/base/Header';
 import RoundButton, { Color } from '../component/common/RoundButton';
 import { theme } from '../style/theme';
 import BookSearchModal from '../component/search/BookSearchModal';
 import AddressModal from '../component/search/AddressModal';
-import { BookInfo, registParty, IParty } from '../lib/api/party';
+import { BookInfo, registParty, InsertParty } from '../lib/api/party';
 import { dayObject } from '../lib/date';
+import { messageHandler } from '../atom';
 
 const { useState, useMemo, useRef, createRef, useReducer } = React;
 
@@ -24,6 +26,7 @@ const Block = styled.div`
 `;
 
 const TitleArea = styled.div`
+  width: 100%;
   padding: 2rem 0;
   input {
     width: 100%;
@@ -41,9 +44,29 @@ const TitleArea = styled.div`
   }
 `;
 
-const AddressInput = styled.input`
+const RecruitPlanArea = styled.div`
+  display: flex;
+  padding: 0 0 1rem 0;
+  align-items: center;
+
+  h4 {
+    margin-right: 1.5rem;
+  }
+
+  h5 {
+    color: ${theme.subText};
+  }
+
+  button {
+    margin-right: 0.5rem;
+  }
+`;
+
+const BaseInput = styled.input`
   background: inherit;
   font-size: 1rem;
+  padding-top: 0.2rem;
+
   border-bottom: 1px solid ${theme.boldLine};
   :hover {
     outline: none;
@@ -54,17 +77,7 @@ const AddressInput = styled.input`
   }
 `;
 
-const RecruitPlanArea = styled.div`
-  display: flex;
-  padding: 0 0 1rem 0;
-  align-items: center;
-
-  h3 {
-    margin-right: 1.5rem;
-  }
-`;
-
-const RecruitPlanInput = styled.input`
+const RecruitPlanInput = styled(BaseInput)`
   width: 2rem;
   background: inherit;
   font-size: 1rem;
@@ -78,6 +91,14 @@ const RecruitPlanInput = styled.input`
   :focus {
     outline: none;
   }
+`;
+
+const KakaoChatInput = styled(BaseInput)`
+  width: 25rem;
+`;
+
+const KakaoPasswordInput = styled(BaseInput)`
+  width: 8rem;
 `;
 
 const WriteArea = styled(ReactQuill)`
@@ -101,7 +122,7 @@ const SearchResultArea = styled.div`
     margin-right: 1.5rem;
   }
 
-  h3 {
+  h4 {
     color: gray;
   }
 `;
@@ -110,6 +131,10 @@ const BookInfoArea = styled.div`
   display: flex;
   flex-direction: column;
   line-height: 1.5rem;
+`;
+
+const AddressInput = styled(BaseInput)`
+  width: 12rem;
 `;
 
 interface AvailableDay {
@@ -162,11 +187,16 @@ const Write = () => {
   const titleRef = createRef<HTMLInputElement>();
   const numberOfRecruitRef = createRef<HTMLInputElement>();
   const locationRef = createRef<HTMLInputElement>();
+  const kakaoLinkRef = createRef<HTMLInputElement>();
+  const kakaoPasswordRef = createRef<HTMLInputElement>();
+  const setMessage = useSetRecoilState(messageHandler);
+
   const [dayState, setDayState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     dayStateObject
   );
   const quillRef = useRef(null);
+  const navigation = useNavigate();
 
   const imageHandler = () => {
     const input = document.createElement('input');
@@ -192,7 +222,12 @@ const Write = () => {
         const imageURL = response.data.result;
         editor.insertEmbed(range.index, 'image', imageURL);
       } catch (error) {
-        alert('Upload 실패');
+        setMessage({
+          name: 'FailImageUpload',
+          message: '업로드에 실패했습니다',
+          status: 'error',
+        });
+        setTimeout(() => setMessage(null), 1500);
       }
     });
   };
@@ -220,6 +255,7 @@ const Write = () => {
     'strike',
     'blockquote',
     'image',
+    'imageURL',
   ];
 
   const regist = async (event) => {
@@ -234,16 +270,18 @@ const Write = () => {
     const title = titleRef.current.value;
     const numberOfRecruit = Number(numberOfRecruitRef.current.value);
     const description = quillRef.current.value;
-
-    const location = isOnline ? undefined : locationRef.current.value;
+    const kakaoOpenChatLink = kakaoLinkRef.current.value;
+    const kakaoOpenChatPassword = kakaoPasswordRef.current.value;
 
     // validation
     if (!title) {
       return setWarningMessage('제목을 입력해주세요');
     }
 
-    if (title.length > 30) {
-      return setWarningMessage('제목은 30자까지 입력가능합니다');
+    const trimTitle = title.trim();
+
+    if (trimTitle.length > 20) {
+      return setWarningMessage('제목은 20자까지 입력가능합니다');
     }
 
     if (!numberOfRecruit) {
@@ -252,6 +290,10 @@ const Write = () => {
 
     if (!numberOfRecruit) {
       return setWarningMessage('그룹인원을 숫자로 입력해주세요');
+    }
+
+    if (!kakaoOpenChatLink) {
+      return setWarningMessage('오픈채팅방 링크를 입력해주세요');
     }
 
     const descriptionRegex = /<[^>]*>?/g;
@@ -266,23 +308,33 @@ const Write = () => {
     const splitAddress = address.split(' ');
     const [region, city, town] = splitAddress.map((address) => address.trim());
 
-    const party: IParty = {
-      title,
+    const party: InsertParty = {
+      title: trimTitle,
       numberOfRecruit,
+      kakaoOpenChatLink,
+      kakaoOpenChatPassword,
       isOnline,
       description,
-      region,
-      city,
-      town,
+      region: isOnline ? undefined : region,
+      city: isOnline ? undefined : city,
+      town: isOnline ? undefined : town,
     };
 
-    const response = await registParty({
-      party,
-      availableDay: availableDayList,
-      book: selectedBook,
-      userID: 1,
-    });
-    console.log(response);
+    try {
+      const response = await registParty({
+        party,
+        availableDay: availableDayList,
+        book: selectedBook,
+      });
+      navigation('/');
+    } catch (error) {
+      setMessage({
+        name: error.name,
+        message: '등록에 실패했습니다',
+        status: 'error',
+      });
+      setTimeout(() => setMessage(null), 1500);
+    }
   };
 
   const modifyAvailableDay = (
@@ -324,14 +376,19 @@ const Write = () => {
       return setMemberWarningeMessage('숫자를 입력해주세요');
     }
 
+    if (stringToNumber < 2) {
+      event.currentTarget.value = null;
+      return setMemberWarningeMessage('최소 2명이상 가능합니다');
+    }
+
     if (stringToNumber > 6) {
-      event.currentTarget.value = String(6);
+      event.currentTarget.value = null;
+      return setMemberWarningeMessage('최대 6명까지 가능합니다');
     }
   };
 
   return (
     <MainTemplate>
-      <Header />
       <Block>
         <TitleArea>
           <input placeholder={'제목을 입력해주세요!'} ref={titleRef} />
@@ -339,19 +396,28 @@ const Write = () => {
 
         <div>
           <RecruitPlanArea>
-            <h3>그룹 인원</h3>
+            <h4>그룹 인원</h4>
             <RecruitPlanInput
               ref={numberOfRecruitRef}
               onChange={checkLimitNumber}
             />
-            <h4>/</h4>
-            <h4>6</h4>
             {memberWarningeMessage ? (
               <SideWarningMessage>{memberWarningeMessage}</SideWarningMessage>
             ) : null}
           </RecruitPlanArea>
           <RecruitPlanArea>
-            <h3>가능 요일</h3>
+            <h4>카톡 오픈챗 링크</h4>
+            <KakaoChatInput ref={kakaoLinkRef} />
+          </RecruitPlanArea>
+          <RecruitPlanArea>
+            <h4>카톡 오픈챗 비밀번호</h4>
+            <KakaoPasswordInput ref={kakaoPasswordRef} />
+          </RecruitPlanArea>
+          <RecruitPlanArea>
+            <h5>카톡 채팅방 관련 정보는 그룹 가입이후 안내됩니다</h5>
+          </RecruitPlanArea>
+          <RecruitPlanArea>
+            <h4>가능 요일</h4>
             <RoundButton
               size="SMALL"
               color={dayState.mon.available ? 'blue' : 'gray'}
@@ -396,15 +462,15 @@ const Write = () => {
             />
           </RecruitPlanArea>
           <RecruitPlanArea>
-            <h3>모임 여부</h3>
+            <h4>모임 여부</h4>
             <RoundButton
-              size="DEFAULT"
+              size="SMALL"
               color={isOnline ? 'blue' : 'gray'}
               text="온라인"
               onClick={setOnline}
             />
             <RoundButton
-              size="DEFAULT"
+              size="SMALL"
               color={isOnline ? 'gray' : 'blue'}
               text="오프라인"
               onClick={setOffline}
@@ -412,7 +478,7 @@ const Write = () => {
           </RecruitPlanArea>
           {isOnline ? null : (
             <RecruitPlanArea>
-              <h3>그룹 위치</h3>
+              <h4>그룹 위치</h4>
               {address ? (
                 <>
                   <h4 ref={locationRef}>{address}</h4>
@@ -439,7 +505,7 @@ const Write = () => {
             ></AddressModal>
           ) : null}
           <RecruitPlanArea>
-            <h3>도서 검색</h3>
+            <h4>도서 검색</h4>
             <BiSearch
               size="1.5rem"
               onClick={controlBookSearchModal}

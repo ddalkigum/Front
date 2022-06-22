@@ -1,7 +1,8 @@
+import { User } from '../../types/entity';
+
 export interface ErrorResponse {
   name: string;
-  message;
-  string;
+  message: string;
 }
 
 export interface BaseResponse<T> {
@@ -28,14 +29,5 @@ interface CheckCertificationResult {
 }
 
 export type CheckCertificationResponse = BaseResponse<CheckCertificationResult>;
-
-// User
-export interface UserProfile {
-  id: number;
-  email: string;
-  nickname: string;
-  profileImage: string;
-}
-
-export type SigninResponse = BaseResponse<UserProfile>;
-export type IGetUserProfile = BaseResponse<UserProfile>;
+export type SigninResponse = BaseResponse<User>;
+export type IGetUserProfile = BaseResponse<User>;

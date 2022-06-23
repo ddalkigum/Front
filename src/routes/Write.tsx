@@ -195,7 +195,7 @@ const Write = () => {
     (state, newState) => ({ ...state, ...newState }),
     dayStateObject
   );
-  const quillRef = useRef(null);
+  const quillRef = useRef<ReactQuill>(null);
   const navigation = useNavigate();
 
   const imageHandler = () => {
@@ -220,7 +220,14 @@ const Write = () => {
         );
 
         const imageURL = response.data.result;
-        editor.insertEmbed(range.index, 'image', imageURL);
+        editor.insertText(range.index, '업로드 중입니다...');
+
+        const setImageFile = () => {
+          editor.deleteText(range.index, 12);
+          editor.insertEmbed(range.index, 'image', imageURL);
+        };
+
+        setTimeout(() => setImageFile(), 2000);
       } catch (error) {
         setMessage({
           name: 'FailImageUpload',
@@ -301,7 +308,7 @@ const Write = () => {
       return setWarningMessage('내용을 입력해주세요');
     }
 
-    if (description.replace(descriptionRegex, '').trim() === '') {
+    if (description.toString().replace(descriptionRegex, '').trim() === '') {
       return setWarningMessage('내용을 입력해주세요');
     }
 
@@ -314,7 +321,7 @@ const Write = () => {
       kakaoOpenChatLink,
       kakaoOpenChatPassword,
       isOnline,
-      description,
+      description: description.toString(),
       region: isOnline ? undefined : region,
       city: isOnline ? undefined : city,
       town: isOnline ? undefined : town,

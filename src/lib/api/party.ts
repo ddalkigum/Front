@@ -106,3 +106,10 @@ export const getUserNotification = async () => {
   );
   return response.data;
 };
+
+export const cancelJoinResponse = async (partyID: string) => {
+  const response = await apiClient.delete<BaseResponse<string>>(
+    `/v1/party/participate/${partyID}`
+  );
+  return response.data;
+};

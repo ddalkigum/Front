@@ -3,13 +3,16 @@ import { useLocation } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { currentUser, messageHandler } from '../atom';
-import Header from '../component/base/Header';
-import RoundButton from '../component/common/RoundButton';
+import RoundButton, { Color } from '../component/common/RoundButton';
 import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
+import { updateUserProfileImage } from '../lib/api/image';
+import { updateUserProfileResponse } from '../lib/api/user';
+import { deepClone } from '../lib/common';
 import { mediaQuery } from '../lib/style/media';
+import { User } from '../types/entity';
 
-const { useEffect } = React;
+const { useState } = React;
 
 const Block = styled.div`
   width: 100%;
@@ -58,7 +61,45 @@ const SettingItemArea = styled.div`
 const Setting = () => {
   const location = useLocation();
   const [user, setUser] = useRecoilState(currentUser);
+  const [uploadButton, setUploadButton] = useState<{
+    name: string;
+    color: Color;
+  }>({
+    name: '이미지 변경',
+    color: 'blue',
+  });
   const setMessage = useSetRecoilState(messageHandler);
+
+  const updateProfileImage = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    console.log(user);
+    const input = document.createElement('input');
+    input.accept = 'image/*';
+
+    input.type = 'file';
+    input.onchange = async () => {
+      setUploadButton({ name: '업로드 중...', color: 'gray' });
+      const response = await updateUserProfileImage(
+        user,
+        input.files[0],
+        'profile'
+      );
+
+      const imageURL = response.result;
+      const updatedUser = deepClone<User>(user);
+      updatedUser.profileImage = imageURL;
+
+      await updateUserProfileResponse({ profileImage: imageURL });
+
+      setTimeout(() => {
+        setUser(updatedUser);
+        setUploadButton({ name: '이미지 변경', color: 'blue' });
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      }, 1500);
+    };
+    input.click();
+  };
 
   return (
     <MainTemplate>
@@ -66,8 +107,13 @@ const Setting = () => {
         <Inner>
           <ProfileArea>
             <ImageArea>
-              <RoundImage size="LARGE" src={user.profileImage} />
-              <RoundButton size="SMALL" color="blue" text="이미지 변경" />
+              <RoundImage size="XLARGE" src={user.profileImage} />
+              <RoundButton
+                size="DEFAULT"
+                color={uploadButton.color}
+                text={uploadButton.name}
+                onClick={updateProfileImage}
+              />
             </ImageArea>
             <h2>{user.nickname}</h2>
           </ProfileArea>

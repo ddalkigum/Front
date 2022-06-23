@@ -72,7 +72,7 @@ const SettingBar = ({ isOpen, user }) => {
   };
 
   const moveProfilePage = () => {
-    navigation(`/@${user.nickname}`);
+    navigation(`/profile/@${user.nickname}`);
   };
 
   const moveSettingPage = () => {

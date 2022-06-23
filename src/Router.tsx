@@ -21,7 +21,7 @@ const Router = () => {
         <Route path="/setting" element={<Setting />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/@:nickname/:title" element={<Detail />} />
-        <Route path="/@:nickname" element={<Profile />} />
+        <Route path="/profile/@:nickname" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

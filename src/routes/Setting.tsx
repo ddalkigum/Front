@@ -1,4 +1,5 @@
 import React from 'react';
+import { useQuery } from 'react-query';
 import { useLocation } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -6,8 +7,12 @@ import { currentUser, messageHandler } from '../atom';
 import RoundButton, { Color } from '../component/common/RoundButton';
 import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
-import { updateUserProfileImage } from '../lib/api/image';
-import { updateUserProfileResponse } from '../lib/api/user';
+import { uploadImage } from '../lib/api/image';
+import {
+  getUserProfileByToken,
+  getUserProfileResponse,
+  updateUserProfileResponse,
+} from '../lib/api/user';
 import { deepClone } from '../lib/common';
 import { mediaQuery } from '../lib/style/media';
 import { User } from '../types/entity';
@@ -59,8 +64,8 @@ const SettingItemArea = styled.div`
 `;
 
 const Setting = () => {
-  const location = useLocation();
-  const [user, setUser] = useRecoilState(currentUser);
+  const setMessage = useSetRecoilState(messageHandler);
+  const setUser = useSetRecoilState(currentUser);
   const [uploadButton, setUploadButton] = useState<{
     name: string;
     color: Color;
@@ -68,23 +73,24 @@ const Setting = () => {
     name: '이미지 변경',
     color: 'blue',
   });
-  const setMessage = useSetRecoilState(messageHandler);
+  const { data, isLoading } = useQuery(['currentUser'], () =>
+    getUserProfileByToken()
+  );
 
+  let user;
+  if (!isLoading) {
+    user = data.result;
+  }
   const updateProfileImage = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    console.log(user);
     const input = document.createElement('input');
     input.accept = 'image/*';
 
     input.type = 'file';
     input.onchange = async () => {
       setUploadButton({ name: '업로드 중...', color: 'gray' });
-      const response = await updateUserProfileImage(
-        user,
-        input.files[0],
-        'profile'
-      );
+      const response = await uploadImage(user, input.files[0], 'profile');
 
       const imageURL = response.result;
       const updatedUser = deepClone<User>(user);
@@ -104,27 +110,31 @@ const Setting = () => {
   return (
     <MainTemplate>
       <Block>
-        <Inner>
-          <ProfileArea>
-            <ImageArea>
-              <RoundImage size="XLARGE" src={user.profileImage} />
-              <RoundButton
-                size="DEFAULT"
-                color={uploadButton.color}
-                text={uploadButton.name}
-                onClick={updateProfileImage}
-              />
-            </ImageArea>
-            <h2>{user.nickname}</h2>
-          </ProfileArea>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Inner>
+            <ProfileArea>
+              <ImageArea>
+                <RoundImage size="XLARGE" src={user.profileImage} />
+                <RoundButton
+                  size="DEFAULT"
+                  color={uploadButton.color}
+                  text={uploadButton.name}
+                  onClick={updateProfileImage}
+                />
+              </ImageArea>
+              <h2>{user.nickname}</h2>
+            </ProfileArea>
 
-          <SettingArea>
-            <SettingItemArea>
-              <h3>이메일</h3>
-              <h4>{user.email}</h4>
-            </SettingItemArea>
-          </SettingArea>
-        </Inner>
+            <SettingArea>
+              <SettingItemArea>
+                <h3>이메일</h3>
+                <h4>{user.email}</h4>
+              </SettingItemArea>
+            </SettingArea>
+          </Inner>
+        )}
       </Block>
     </MainTemplate>
   );

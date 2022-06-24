@@ -70,7 +70,6 @@ const OpenChatArea = styled.div`
 
 const NotificationLayout = () => {
   const [activeSubjectID, setActiveSubjectID] = useState('0');
-  const user = useRecoilValue(currentUser);
   const { data, isLoading } = useQuery(['notification'], () =>
     getUserNotification()
   );

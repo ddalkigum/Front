@@ -128,8 +128,7 @@ const DetailPageLayout = ({ nickname, slug }) => {
   const [isOpen, setOpen] = useRecoilState(authModalOpen);
   const [data, setData] = useState<PartyDetailResult>();
   const [content, setContent] = useState<any>(Fragment);
-  const user = useRecoilValue(currentUser);
-  const setUser = useSetRecoilState(currentUser);
+  const [user, setUSer] = useRecoilState(currentUser);
   const setMessage = useSetRecoilState(messageHandler);
 
   useEffect(() => {

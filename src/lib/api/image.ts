@@ -4,7 +4,7 @@ import { BaseResponse } from './interface';
 
 type UploadType = 'profile' | 'party';
 
-export const updateUserProfileImage = async (
+export const uploadImage = async (
   user: User,
   image: File,
   type: UploadType

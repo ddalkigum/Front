@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import { BiSearch } from 'react-icons/bi';
@@ -13,7 +13,8 @@ import BookSearchModal from '../component/search/BookSearchModal';
 import AddressModal from '../component/search/AddressModal';
 import { BookInfo, registParty, InsertParty } from '../lib/api/party';
 import { dayObject } from '../lib/date';
-import { messageHandler } from '../atom';
+import { currentUser, messageHandler } from '../atom';
+import { uploadImage } from '../lib/api/image';
 
 const { useState, useMemo, useRef, createRef, useReducer } = React;
 
@@ -190,11 +191,13 @@ const Write = () => {
   const kakaoLinkRef = createRef<HTMLInputElement>();
   const kakaoPasswordRef = createRef<HTMLInputElement>();
   const setMessage = useSetRecoilState(messageHandler);
+  const user = useRecoilValue(currentUser);
 
   const [dayState, setDayState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     dayStateObject
   );
+
   const quillRef = useRef<ReactQuill>(null);
   const navigation = useNavigate();
 
@@ -206,20 +209,12 @@ const Write = () => {
 
     input.addEventListener('change', async () => {
       const file = input.files[0];
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('nickname', '딸기검');
-      formData.append('type', 'party');
-
-      const editor = quillRef.current.getEditor();
-      const range = editor.getSelection();
       try {
-        const response = await axios.post(
-          'http://localhost:3001/v1/image',
-          formData
-        );
+        const response = await uploadImage(user, file, 'party');
+        const editor = quillRef.current.getEditor();
+        const range = editor.getSelection();
 
-        const imageURL = response.data.result;
+        const imageURL = response.result;
         editor.insertText(range.index, '업로드 중입니다...');
 
         const setImageFile = () => {
@@ -227,7 +222,7 @@ const Write = () => {
           editor.insertEmbed(range.index, 'image', imageURL);
         };
 
-        setTimeout(() => setImageFile(), 2000);
+        setTimeout(() => setImageFile(), 1500);
       } catch (error) {
         setMessage({
           name: 'FailImageUpload',
@@ -277,8 +272,8 @@ const Write = () => {
     const title = titleRef.current.value;
     const numberOfRecruit = Number(numberOfRecruitRef.current.value);
     const description = quillRef.current.value;
-    const kakaoOpenChatLink = kakaoLinkRef.current.value;
-    const kakaoOpenChatPassword = kakaoPasswordRef.current.value;
+    const openChatURL = kakaoLinkRef.current.value;
+    const openChatPassword = kakaoPasswordRef.current.value;
 
     // validation
     if (!title) {
@@ -299,7 +294,7 @@ const Write = () => {
       return setWarningMessage('그룹인원을 숫자로 입력해주세요');
     }
 
-    if (!kakaoOpenChatLink) {
+    if (!openChatURL) {
       return setWarningMessage('오픈채팅방 링크를 입력해주세요');
     }
 
@@ -318,8 +313,8 @@ const Write = () => {
     const party: InsertParty = {
       title: trimTitle,
       numberOfRecruit,
-      kakaoOpenChatLink,
-      kakaoOpenChatPassword,
+      openChatURL,
+      openChatPassword,
       isOnline,
       description: description.toString(),
       region: isOnline ? undefined : region,

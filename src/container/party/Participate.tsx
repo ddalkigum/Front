@@ -3,11 +3,6 @@ import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import PartyCard from '../../component/party/PartyCard';
 import { getParticipatePartyList } from '../../lib/api/party';
-import { mediaQuery } from '../../lib/style/media';
-
-const Area = styled.div`
-  width: 100%;
-`;
 
 const Participate = ({
   userID,
@@ -36,12 +31,7 @@ const Participate = ({
         data.result
           .filter((party) => !party.isOwner)
           .map((party) => {
-            return (
-              <Area>
-                <PartyCard key={party.partyID} party={party}></PartyCard>
-                <span>취소</span>
-              </Area>
-            );
+            return <PartyCard key={party.partyID} party={party}></PartyCard>;
           })
       )}
     </>

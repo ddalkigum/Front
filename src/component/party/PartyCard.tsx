@@ -11,16 +11,16 @@ import { convertDateToString } from '../../lib/date';
 import { mediaQuery } from '../../lib/style/media';
 
 const Block = styled.div`
-  width: 20rem;
+  width: calc(24% - 1rem);
   height: 100%;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   cursor: pointer;
 
-  ${mediaQuery(1440)} {
-    width: calc(50% - 1rem);
+  ${mediaQuery(1920)} {
+    width: calc(32% - 1rem);
   }
 
-  ${mediaQuery(1056)} {
+  ${mediaQuery(1440)} {
     width: calc(50% - 1rem);
   }
 
@@ -48,14 +48,14 @@ const BookImage = styled.img`
 `;
 
 const BookInfoArea = styled.div`
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   padding-left: 0.875rem;
 `;
 
 const BookTitle = styled.h5`
-  width: 90%;
+  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

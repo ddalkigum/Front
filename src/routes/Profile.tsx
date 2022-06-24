@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
 import Participate from '../container/party/Participate';
+import ContentTemplate from '../component/base/ContentTemplate';
 import { BaseResponse } from '../lib/api/interface';
 import { getUserProfileResponse } from '../lib/api/user';
 import { mediaQuery } from '../lib/style/media';
@@ -51,8 +52,8 @@ const PartyArea = styled.div`
 `;
 
 const subjectList = [
-  { id: '0', name: '생성한 그룹 보기' },
-  { id: '1', name: '참여한 그룹 보기' },
+  { id: '0', name: '생성한 그룹' },
+  { id: '1', name: '참여한 그룹' },
 ];
 
 const Profile = () => {
@@ -68,7 +69,7 @@ const Profile = () => {
 
   return (
     <MainTemplate>
-      <Block>
+      <ContentTemplate>
         {isLoading ? (
           <ProfileArea>zxcv</ProfileArea>
         ) : (
@@ -103,7 +104,7 @@ const Profile = () => {
             </PartyArea>
           </Inner>
         )}
-      </Block>
+      </ContentTemplate>
     </MainTemplate>
   );
 };

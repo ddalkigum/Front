@@ -4,16 +4,10 @@ import { config } from '../../config';
 
 const Block = styled.div`
   width: 100%;
-  height: auto;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
-  text-align: center;
+  justify-content: center;
   align-items: center;
-`;
-
-const Inner = styled.div`
-  width: 100%;
-  height: auto;
 
   img {
     width: 4rem;
@@ -22,15 +16,12 @@ const Inner = styled.div`
   }
 `;
 
-const NotFound = () => {
+const NoContent = ({ message }) => {
   return (
     <Block>
-      <Inner>
-        <img src={config.image.iconLarge} />
-        <h2>페이지를 찾을 수 없습니다</h2>
-      </Inner>
+      <h3>{message}</h3>
     </Block>
   );
 };
 
-export default NotFound;
+export default NoContent;

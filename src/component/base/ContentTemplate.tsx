@@ -3,15 +3,9 @@ import styled from 'styled-components';
 import { mediaQuery } from '../../lib/style/media';
 
 const Block = styled.div`
-  width: 100%;
+  width: 1024px;
   margin: auto;
 
-  ${mediaQuery(1919)} {
-    width: 1376px;
-  }
-  ${mediaQuery(1440)} {
-    width: 1024px;
-  }
   ${mediaQuery(1056)} {
     width: calc(100% - 2rem);
   }

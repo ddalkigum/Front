@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { currentUser } from '../../atom';
+import NoContent from '../../component/common/NoContent';
 import Subject from '../../component/common/Subject';
 import { getUserNotification } from '../../lib/api/party';
 import { theme } from '../../style/theme';
@@ -83,7 +84,7 @@ const NotificationLayout = () => {
       />
       {isLoading ? (
         <h3>Loading...</h3>
-      ) : (
+      ) : data.result.length ? (
         <CardArea>
           {data.result.map((noti) => {
             return (
@@ -109,6 +110,8 @@ const NotificationLayout = () => {
             );
           })}
         </CardArea>
+      ) : (
+        <NoContent message="아직 참여한 그룹이 없네요 🥲" />
       )}
     </Block>
   );

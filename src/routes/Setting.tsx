@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { currentUser, messageHandler } from '../atom';
 import RoundButton, { Color } from '../component/common/RoundButton';
@@ -10,12 +9,12 @@ import MainTemplate from '../component/main/MainTemplate';
 import { uploadImage } from '../lib/api/image';
 import {
   getUserProfileByToken,
-  getUserProfileResponse,
   updateUserProfileResponse,
 } from '../lib/api/user';
 import { deepClone } from '../lib/common';
 import { mediaQuery } from '../lib/style/media';
 import { User } from '../types/entity';
+import ContentTemplate from '../component/base/ContentTemplate';
 
 const { useState } = React;
 
@@ -109,7 +108,7 @@ const Setting = () => {
 
   return (
     <MainTemplate>
-      <Block>
+      <ContentTemplate>
         {isLoading ? (
           <div>Loading...</div>
         ) : (
@@ -135,7 +134,7 @@ const Setting = () => {
             </SettingArea>
           </Inner>
         )}
-      </Block>
+      </ContentTemplate>
     </MainTemplate>
   );
 };

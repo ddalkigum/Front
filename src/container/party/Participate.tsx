@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import PartyCard from '../../component/party/PartyCard';
 import { getParticipatePartyList } from '../../lib/api/party';
+import SkeletonCard from '../../component/party/SkeletonCard';
 
 const Participate = ({
   userID,
@@ -19,21 +20,21 @@ const Participate = ({
 
   return (
     <>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : index === '0' ? (
-        data.result
-          .filter((party) => party.isOwner)
-          .map((party) => {
-            return <PartyCard key={party.partyID} party={party}></PartyCard>;
+      {isLoading
+        ? Array.from({ length: 8 }).map((value, index) => {
+            return <SkeletonCard key={index} />;
           })
-      ) : (
-        data.result
-          .filter((party) => !party.isOwner)
-          .map((party) => {
-            return <PartyCard key={party.partyID} party={party}></PartyCard>;
-          })
-      )}
+        : index === '0'
+        ? data.result
+            .filter((party) => party.isOwner)
+            .map((party) => {
+              return <PartyCard key={party.partyID} party={party}></PartyCard>;
+            })
+        : data.result
+            .filter((party) => !party.isOwner)
+            .map((party) => {
+              return <PartyCard key={party.partyID} party={party}></PartyCard>;
+            })}
     </>
   );
 };

@@ -3,13 +3,15 @@ import styled from 'styled-components';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeReact from 'rehype-react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router';
 import RoundButton from '../../component/common/RoundButton';
 import RoundImage from '../../component/common/RoundImage';
+import ContentTemplate from '../../component/base/ContentTemplate';
 import { getKorAvailableDay } from '../../lib/date';
 import {
   cancelJoinResponse,
+  getModifyPartyResponse,
   getPartyDetail,
   registNotification,
   requestParticipateResponse,
@@ -60,15 +62,34 @@ const DetailConditionArea = styled.div`
   }
 `;
 
-const OwnerProfileArea = styled.div`
+const OwnerArea = styled.div`
   display: flex;
-  width: fit-content;
   align-items: center;
+  justify-content: space-between;
   margin-top: 2rem;
   cursor: pointer;
 
   img {
     margin-right: 1rem;
+  }
+`;
+
+const OwnerProfileArea = styled.div`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+`;
+
+const OwnerOptionArea = styled.div`
+  display: flex;
+  width: fit-content;
+  h4 {
+    color: gray;
+    margin-left: 1.5rem;
+
+    :hover {
+      color: darkgray;
+    }
   }
 `;
 
@@ -217,89 +238,96 @@ const DetailPageLayout = ({ nickname, slug }) => {
     setTimeout(() => setMessage(null), 1500);
   };
 
+  const modifyParty = async () => {
+    const partyID = data.party.id;
+    navigation(`/write?id=${partyID}`);
+  };
+
   return (
-    <>
-      <Block>
-        {isLoading ? (
-          <Inner>
-            <Title>
-              <h1>{data.party.title}</h1>
-            </Title>
+    <ContentTemplate>
+      {isLoading ? (
+        <Inner>
+          <Title>
+            <h1>{data.party.title}</h1>
+          </Title>
+          <OwnerArea>
             <OwnerProfileArea>
               <RoundImage size="SMALL" src={data.owner.profileImage} />
               <h4>{data.owner.nickname}</h4>
             </OwnerProfileArea>
-            <ConditionArea>
-              <DetailConditionArea>
-                <h4>모임여부:</h4>
+            <OwnerOptionArea>
+              <h4 onClick={modifyParty}>수정</h4>
+              <h4>삭제</h4>
+            </OwnerOptionArea>
+          </OwnerArea>
+          <ConditionArea>
+            <DetailConditionArea>
+              <h4>모임여부:</h4>
 
-                <h5>{data.party.isOnline ? '온라인' : '오프라인'}</h5>
-              </DetailConditionArea>
+              <h5>{data.party.isOnline ? '온라인' : '오프라인'}</h5>
+            </DetailConditionArea>
 
-              {data.party.isOnline ? null : (
-                <DetailConditionArea>
-                  <h4>모임위치:</h4>
-                  <h5>{`${data.party.region} ${data.party.city} ${data.party.town}`}</h5>
-                </DetailConditionArea>
-              )}
+            {data.party.isOnline ? null : (
               <DetailConditionArea>
-                <h4>모집인원:</h4>
-                <h5>{data.party.numberOfRecruit} 명</h5>
+                <h4>모임위치:</h4>
+                <h5>{`${data.party.region} ${data.party.city} ${data.party.town}`}</h5>
               </DetailConditionArea>
-              <DetailConditionArea>
-                <h4>가능요일:</h4>
-                <h5>
-                  {getKorAvailableDay(
-                    data.availableDay.map((day) => day.dayID)
-                  )}
-                </h5>
-              </DetailConditionArea>
-              <BookInfoArea>
-                <img src={data.book.thumbnail} />
-                <div>
-                  <h5>{data.book.title}</h5>
-                  <h6>{data.book.authors}</h6>
-                </div>
-              </BookInfoArea>
-            </ConditionArea>
-            <DescriptionArea>{content}</DescriptionArea>
-            <ApplyButtonArea>
-              {data.participant.isParticipant ? (
-                data.participant.isOwner ? (
-                  <RoundButton
-                    size="LARGE"
-                    color="gray"
-                    text="이미 참여한 그룹입니다"
-                    cursor="default"
-                  />
-                ) : (
-                  <RoundButton
-                    size="LARGE"
-                    color="pink"
-                    text="참여 취소"
-                    onClick={cancelJoin}
-                  />
-                )
+            )}
+            <DetailConditionArea>
+              <h4>모집인원:</h4>
+              <h5>{data.party.numberOfRecruit} 명</h5>
+            </DetailConditionArea>
+            <DetailConditionArea>
+              <h4>가능요일:</h4>
+              <h5>
+                {getKorAvailableDay(data.availableDay.map((day) => day.dayID))}
+              </h5>
+            </DetailConditionArea>
+            <BookInfoArea>
+              <img src={data.book.thumbnail} />
+              <div>
+                <h5>{data.book.title}</h5>
+                <h6>{data.book.authors}</h6>
+              </div>
+            </BookInfoArea>
+          </ConditionArea>
+          <DescriptionArea>{content}</DescriptionArea>
+          <ApplyButtonArea>
+            {data.participant.isParticipant ? (
+              data.participant.isOwner ? (
+                <RoundButton
+                  size="LARGE"
+                  color="gray"
+                  text="이미 참여한 그룹입니다"
+                  cursor="default"
+                />
               ) : (
                 <RoundButton
                   size="LARGE"
-                  color="blue"
-                  text="참가하기"
-                  onClick={joinParty}
+                  color="pink"
+                  text="참여 취소"
+                  onClick={cancelJoin}
                 />
-              )}
-            </ApplyButtonArea>
-            <SubTitle>
-              <h3>비슷한 그룹</h3>
-            </SubTitle>
-            {/* {relationPartyList.map(party => {
+              )
+            ) : (
+              <RoundButton
+                size="LARGE"
+                color="blue"
+                text="참가하기"
+                onClick={joinParty}
+              />
+            )}
+          </ApplyButtonArea>
+          <SubTitle>
+            <h3>비슷한 그룹</h3>
+          </SubTitle>
+          {/* {relationPartyList.map(party => {
               
             <PartyCard party={party}/>
             })} */}
-          </Inner>
-        ) : null}
-      </Block>
-    </>
+        </Inner>
+      ) : null}
+    </ContentTemplate>
   );
 };
 

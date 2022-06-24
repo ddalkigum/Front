@@ -39,3 +39,8 @@ export const updateUserProfileResponse = async (
   );
   return response.data;
 };
+
+export const deactivateUserResponse = async () => {
+  const response = await apiClient.delete<BaseResponse<void>>('/v1/user');
+  return response.data;
+};

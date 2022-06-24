@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { currentUser, messageHandler } from '../atom';
 import RoundButton, { Color } from '../component/common/RoundButton';
@@ -8,6 +8,7 @@ import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
 import { uploadImage } from '../lib/api/image';
 import {
+  deactivateUserResponse,
   getUserProfileByToken,
   updateUserProfileResponse,
 } from '../lib/api/user';
@@ -62,9 +63,13 @@ const SettingItemArea = styled.div`
   padding: 1.5rem 0;
 `;
 
+const WarningMessage = styled.h5`
+  color: gray;
+`;
+
 const Setting = () => {
   const setMessage = useSetRecoilState(messageHandler);
-  const setUser = useSetRecoilState(currentUser);
+  const [user, setUser] = useRecoilState(currentUser);
   const [uploadButton, setUploadButton] = useState<{
     name: string;
     color: Color;
@@ -72,14 +77,11 @@ const Setting = () => {
     name: '이미지 변경',
     color: 'blue',
   });
+
   const { data, isLoading } = useQuery(['currentUser'], () =>
     getUserProfileByToken()
   );
 
-  let user;
-  if (!isLoading) {
-    user = data.result;
-  }
   const updateProfileImage = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -104,6 +106,12 @@ const Setting = () => {
       }, 1500);
     };
     input.click();
+  };
+
+  const deactivate = async () => {
+    await deactivateUserResponse();
+    localStorage.removeItem('currentUser');
+    setUser(null);
   };
 
   return (
@@ -131,6 +139,18 @@ const Setting = () => {
                 <h3>이메일</h3>
                 <h4>{user.email}</h4>
               </SettingItemArea>
+              <SettingItemArea>
+                <h3>회원탈퇴</h3>
+                <RoundButton
+                  color="pink"
+                  size="DEFAULT"
+                  text="회원탈퇴"
+                  onClick={deactivate}
+                />
+              </SettingItemArea>
+              <WarningMessage>
+                탈퇴 시 모든 기록이 삭제되며, 복구되지 않습니다{' '}
+              </WarningMessage>
             </SettingArea>
           </Inner>
         )}

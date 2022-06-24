@@ -1,8 +1,7 @@
 import { MainCard } from '../../container/home/HomeLayout';
 import { PartyDetailResult } from '../../container/party/DetailLayout';
-import { Book, DateTime, Party, User } from '../../types/entity';
+import { DateTime, Party } from '../../types/entity';
 import apiClient from './client';
-import { handleAPI } from './common';
 import { BaseResponse } from './interface';
 
 export interface BookMeta {
@@ -34,6 +33,7 @@ export type InsertParty = Omit<
 export interface PartyContext {
   party: InsertParty;
   availableDay: string[];
+  availableDayList?: string[];
   book: BookInfo;
 }
 
@@ -111,5 +111,23 @@ export const cancelJoinResponse = async (partyID: string) => {
   const response = await apiClient.delete<BaseResponse<string>>(
     `/v1/party/participate/${partyID}`
   );
+  return response.data;
+};
+
+export const getModifyPartyResponse = async (partyID: string) => {
+  const response = await apiClient.get<BaseResponse<any>>(
+    `/v1/party/modify?id=${partyID}`
+  );
+  return response.data;
+};
+
+export const updatePartyResponse = async (
+  partyID: string,
+  context: PartyContext
+) => {
+  const response = await apiClient.patch('/v1/party/update', {
+    partyID,
+    ...context,
+  });
   return response.data;
 };

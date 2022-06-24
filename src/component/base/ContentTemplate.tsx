@@ -18,7 +18,7 @@ const Inner = styled.div`
   margin: auto;
 `;
 
-const BaseTemplate = ({ children }) => {
+const ContentTemplate = ({ children }) => {
   return (
     <Block>
       <Inner>{children}</Inner>
@@ -26,4 +26,4 @@ const BaseTemplate = ({ children }) => {
   );
 };
 
-export default BaseTemplate;
+export default ContentTemplate;

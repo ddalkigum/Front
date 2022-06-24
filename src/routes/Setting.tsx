@@ -1,14 +1,23 @@
 import React from 'react';
+import { useQuery } from 'react-query';
 import { useLocation } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { currentUser, messageHandler } from '../atom';
-import RoundButton from '../component/common/RoundButton';
+import RoundButton, { Color } from '../component/common/RoundButton';
 import RoundImage from '../component/common/RoundImage';
 import MainTemplate from '../component/main/MainTemplate';
+import { uploadImage } from '../lib/api/image';
+import {
+  getUserProfileByToken,
+  getUserProfileResponse,
+  updateUserProfileResponse,
+} from '../lib/api/user';
+import { deepClone } from '../lib/common';
 import { mediaQuery } from '../lib/style/media';
+import { User } from '../types/entity';
 
-const { useEffect } = React;
+const { useState } = React;
 
 const Block = styled.div`
   width: 100%;
@@ -55,42 +64,77 @@ const SettingItemArea = styled.div`
 `;
 
 const Setting = () => {
-  const location = useLocation();
-  const [user, setUser] = useRecoilState(currentUser);
   const setMessage = useSetRecoilState(messageHandler);
-  const nickname = decodeURIComponent(
-    location.pathname.split('/')[2].replace('@', '')
+  const setUser = useSetRecoilState(currentUser);
+  const [uploadButton, setUploadButton] = useState<{
+    name: string;
+    color: Color;
+  }>({
+    name: '이미지 변경',
+    color: 'blue',
+  });
+  const { data, isLoading } = useQuery(['currentUser'], () =>
+    getUserProfileByToken()
   );
 
-  useEffect(() => {
-    if (nickname !== user.nickname) {
-      setMessage({
-        name: 'Forbidden',
-        message: '권한이 없습니다',
-        status: 'error',
-      });
-    }
-  }, []);
+  let user;
+  if (!isLoading) {
+    user = data.result;
+  }
+  const updateProfileImage = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const input = document.createElement('input');
+    input.accept = 'image/*';
+
+    input.type = 'file';
+    input.onchange = async () => {
+      setUploadButton({ name: '업로드 중...', color: 'gray' });
+      const response = await uploadImage(user, input.files[0], 'profile');
+
+      const imageURL = response.result;
+      const updatedUser = deepClone<User>(user);
+      updatedUser.profileImage = imageURL;
+
+      await updateUserProfileResponse({ profileImage: imageURL });
+
+      setTimeout(() => {
+        setUser(updatedUser);
+        setUploadButton({ name: '이미지 변경', color: 'blue' });
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      }, 1500);
+    };
+    input.click();
+  };
 
   return (
     <MainTemplate>
       <Block>
-        <Inner>
-          <ProfileArea>
-            <ImageArea>
-              <RoundImage size="LARGE" src={user.profileImage} />
-              <RoundButton size="SMALL" color="blue" text="이미지 변경" />
-            </ImageArea>
-            <h2>{user.nickname}</h2>
-          </ProfileArea>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Inner>
+            <ProfileArea>
+              <ImageArea>
+                <RoundImage size="XLARGE" src={user.profileImage} />
+                <RoundButton
+                  size="DEFAULT"
+                  color={uploadButton.color}
+                  text={uploadButton.name}
+                  onClick={updateProfileImage}
+                />
+              </ImageArea>
+              <h2>{user.nickname}</h2>
+            </ProfileArea>
 
-          <SettingArea>
-            <SettingItemArea>
-              <h3>이메일</h3>
-              <h4>{user.email}</h4>
-            </SettingItemArea>
-          </SettingArea>
-        </Inner>
+            <SettingArea>
+              <SettingItemArea>
+                <h3>이메일</h3>
+                <h4>{user.email}</h4>
+              </SettingItemArea>
+            </SettingArea>
+          </Inner>
+        )}
       </Block>
     </MainTemplate>
   );

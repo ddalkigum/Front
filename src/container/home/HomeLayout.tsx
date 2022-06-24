@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import PartyCard from '../../component/party/PartyCard';
 import { getPartyList } from '../../lib/api/party';
-import { mediaQuery } from '../../lib/style/media';
-import { AvailableDay, Book, Party, User } from '../../types/entity';
-import { PartyParticipant } from '../party/DetailLayout';
 
 const { useState, useEffect } = React;
 
@@ -42,14 +39,6 @@ export interface MainCard {
   authors: string;
   numberOfParticipant: string;
   isOwner?: boolean;
-}
-
-interface DetailParty {
-  owner: Pick<User, 'id' | 'nickname' | 'profileImage'>;
-  party: Omit<Party, 'bookID' | 'ownerID'>;
-  book: Book;
-  participant: PartyParticipant;
-  availableDay: AvailableDay[];
 }
 
 const HomeLayout = () => {

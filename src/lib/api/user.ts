@@ -29,3 +29,13 @@ export const getUserProfile = async () => {
   const currentUser = userResponse.result;
   return currentUser;
 };
+
+export const updateUserProfileResponse = async (
+  updateCondition: Partial<User>
+) => {
+  const response = await apiClient.patch<BaseResponse<Partial<User>>>(
+    '/v1/user/profile',
+    updateCondition
+  );
+  return response.data;
+};

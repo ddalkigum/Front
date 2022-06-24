@@ -15,6 +15,7 @@ const { useState } = React;
 
 const Block = styled.div`
   width: 100%;
+  height: 100%;
   margin: auto;
 
   ${mediaQuery(1919)} {
@@ -29,8 +30,6 @@ const Block = styled.div`
 `;
 
 const Inner = styled.div`
-  width: 65rem;
-  max-width: 100%;
   height: 100%;
   margin: auto;
 `;
@@ -38,7 +37,6 @@ const Inner = styled.div`
 const ProfileArea = styled.div`
   display: flex;
   align-items: center;
-  width: fit-content;
   margin-top: 5rem;
 
   img {
@@ -60,7 +58,7 @@ const subjectList = [
 const Profile = () => {
   const location = useLocation();
   const [activeSubjectID, setActiveSubjectID] = useState('0');
-  const [_, nickname] = location.pathname.split('/');
+  const [_, __, nickname] = location.pathname.split('/');
   const decodedNickname = decodeURIComponent(nickname.replace('@', ''));
 
   const { isLoading, data, isError } = useQuery<BaseResponse<User>>(
@@ -88,23 +86,21 @@ const Profile = () => {
               activeSubjectID={activeSubjectID}
               setActiveSubjectID={setActiveSubjectID}
             />
-            {activeSubjectID === '0' ? (
-              <PartyArea>
+            <PartyArea>
+              {activeSubjectID === '0' ? (
                 <Participate
                   userID={data.result.id}
                   userNikcname={data.result.nickname}
                   index="0"
                 />
-              </PartyArea>
-            ) : (
-              <PartyArea>
+              ) : (
                 <Participate
                   userID={data.result.id}
                   userNikcname={data.result.nickname}
                   index="1"
                 />
-              </PartyArea>
-            )}
+              )}
+            </PartyArea>
           </Inner>
         )}
       </Block>

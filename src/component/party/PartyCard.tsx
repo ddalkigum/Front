@@ -119,7 +119,9 @@ const PartyCard = ({ party }: { party: MainCard }) => {
           </BookInfoArea>
         </BookArea>
         <AddressArea>
-          {party.isOnline ? null : (
+          {party.isOnline ? (
+            <h5>&nbsp;</h5>
+          ) : (
             <h5>{`${party.region} ${party.city} ${party.town}`}</h5>
           )}
         </AddressArea>

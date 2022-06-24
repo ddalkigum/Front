@@ -15,8 +15,8 @@ export interface Party extends DateTime {
   title: string;
   slug: string;
   numberOfRecruit: number;
-  kakaoOpenChatLink: string;
-  kakaoOpenChatPassword: string;
+  openChatURL: string;
+  openChatPassword: string;
   isOnline: boolean;
   region?: string;
   city?: string;

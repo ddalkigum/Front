@@ -9,7 +9,9 @@ import RoundButton from '../../component/common/RoundButton';
 import RoundImage from '../../component/common/RoundImage';
 import { getKorAvailableDay } from '../../lib/date';
 import {
+  cancelJoinResponse,
   getPartyDetail,
+  registNotification,
   requestParticipateResponse,
 } from '../../lib/api/party';
 import { theme } from '../../style/theme';
@@ -106,6 +108,7 @@ const ApplyButtonArea = styled.div`
 `;
 
 export interface PartyParticipant {
+  isOwner: boolean;
   isParticipant: boolean;
   count: number;
 }
@@ -125,8 +128,7 @@ const DetailPageLayout = ({ nickname, slug }) => {
   const [isOpen, setOpen] = useRecoilState(authModalOpen);
   const [data, setData] = useState<PartyDetailResult>();
   const [content, setContent] = useState<any>(Fragment);
-  const user = useRecoilValue(currentUser);
-  const setUser = useSetRecoilState(currentUser);
+  const [user, setUSer] = useRecoilState(currentUser);
   const setMessage = useSetRecoilState(messageHandler);
 
   useEffect(() => {
@@ -158,6 +160,16 @@ const DetailPageLayout = ({ nickname, slug }) => {
       requestParticipateResponse(data.party.id, user.id)
     );
 
+    if (response.result === 'EndOfRecruit') {
+      setMessage({
+        name: 'EndOfRecruit',
+        message: '모집이 종료되었습니다',
+        status: 'error',
+      });
+      setTimeout(() => setMessage(null), 1500);
+      return;
+    }
+
     if (response.status === 'Error') {
       if (response.result.message === 'AlreadyRequestParticpate') {
         // 이미 참가 신청한 그룹입니다
@@ -182,6 +194,8 @@ const DetailPageLayout = ({ nickname, slug }) => {
       return;
     }
 
+    await registNotification(data.party.id);
+
     setMessage({
       name: 'JoinSuccess',
       message:
@@ -189,6 +203,17 @@ const DetailPageLayout = ({ nickname, slug }) => {
       status: 'success',
     });
 
+    setTimeout(() => setMessage(null), 1500);
+  };
+
+  const cancelJoin = async () => {
+    await cancelJoinResponse(data.party.id);
+
+    setMessage({
+      name: 'CancelJoin',
+      message: '취소 완료됬습니다',
+      status: 'success',
+    });
     setTimeout(() => setMessage(null), 1500);
   };
 
@@ -240,12 +265,21 @@ const DetailPageLayout = ({ nickname, slug }) => {
             <DescriptionArea>{content}</DescriptionArea>
             <ApplyButtonArea>
               {data.participant.isParticipant ? (
-                <RoundButton
-                  size="LARGE"
-                  color="gray"
-                  text="이미 참여한 그룹입니다"
-                  cursor="default"
-                />
+                data.participant.isOwner ? (
+                  <RoundButton
+                    size="LARGE"
+                    color="gray"
+                    text="이미 참여한 그룹입니다"
+                    cursor="default"
+                  />
+                ) : (
+                  <RoundButton
+                    size="LARGE"
+                    color="pink"
+                    text="참여 취소"
+                    onClick={cancelJoin}
+                  />
+                )
               ) : (
                 <RoundButton
                   size="LARGE"

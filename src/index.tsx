@@ -17,14 +17,12 @@ const queryClient = new QueryClient({
 if (container) {
   const root = ReactDOM.createRoot(container);
   root.render(
-    <React.StrictMode>
-      <RecoilRoot>
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <App />
-        </QueryClientProvider>
-      </RecoilRoot>
-    </React.StrictMode>
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <App />
+      </QueryClientProvider>
+    </RecoilRoot>
   );
 } else {
   throw new Error('ElementID root is not defined');

@@ -1,6 +1,6 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useQuery } from 'react-query';
-import { useNavigate } from 'react-router';
 import PartyCard from '../../component/party/PartyCard';
 import { getParticipatePartyList } from '../../lib/api/party';
 

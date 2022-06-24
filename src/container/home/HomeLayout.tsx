@@ -2,7 +2,9 @@ import { AxiosError } from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import Skeleton from '../../component/common/Skeleton';
 import PartyCard from '../../component/party/PartyCard';
+import SkeletonCard from '../../component/party/SkeletonCard';
 import { getPartyList } from '../../lib/api/party';
 
 const { useState, useEffect } = React;
@@ -43,7 +45,7 @@ export interface MainCard {
 
 const HomeLayout = () => {
   const [partyList, setPartyList] = useState<MainCard[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const navigation = useNavigate();
 
@@ -51,7 +53,7 @@ const HomeLayout = () => {
     getPartyList(page)
       .then(({ result }) => {
         setPartyList(result);
-        setIsLoading(true);
+        setIsLoading(false);
       })
       .catch((error: AxiosError) => {
         if (error.status === '500') {
@@ -61,19 +63,17 @@ const HomeLayout = () => {
   }, []);
 
   return (
-    <>
-      <Block>
-        <Inner>
-          {isLoading
-            ? partyList.map((party) => {
-                return (
-                  <PartyCard key={party.partyID} party={party}></PartyCard>
-                );
-              })
-            : null}
-        </Inner>
-      </Block>
-    </>
+    <Block>
+      <Inner>
+        {isLoading
+          ? Array.from({ length: 12 }).map((value, index) => {
+              return <SkeletonCard key={index} />;
+            })
+          : partyList.map((party) => {
+              return <PartyCard key={party.partyID} party={party}></PartyCard>;
+            })}
+      </Inner>
+    </Block>
   );
 };
 

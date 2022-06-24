@@ -1,22 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import { BiSearch } from 'react-icons/bi';
+import { unified } from 'unified';
+import rehypeParse from 'rehype-parse';
+import rehypeReact from 'rehype-react';
 import MainTemplate from '../component/main/MainTemplate';
 import RoundButton, { Color } from '../component/common/RoundButton';
 import { theme } from '../style/theme';
 import BookSearchModal from '../component/search/BookSearchModal';
 import AddressModal from '../component/search/AddressModal';
-import { BookInfo, registParty, InsertParty } from '../lib/api/party';
+import {
+  BookInfo,
+  registParty,
+  InsertParty,
+  getModifyPartyResponse,
+  updatePartyResponse,
+} from '../lib/api/party';
 import { dayObject } from '../lib/date';
 import { currentUser, messageHandler } from '../atom';
 import { uploadImage } from '../lib/api/image';
 
-const { useState, useMemo, useRef, createRef, useReducer } = React;
+const {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useReducer,
+  createElement,
+  Fragment,
+} = React;
 
 const Block = styled.div`
   width: 775px;
@@ -177,6 +193,8 @@ const SideWarningMessage = styled.h5`
 `;
 
 const Write = () => {
+  const location = useLocation();
+  const [_, partyID] = location.search.split('=');
   const [value, setValue] = useState();
   const [isOnline, setIsOnline] = useState(true);
   const [bookSearchModalOpen, setBookSearchModalOpen] = useState(false);
@@ -185,22 +203,67 @@ const Write = () => {
   const [selectedBook, setBook] = useState<BookInfo>();
   const [warningMessage, setWarningMessage] = useState('');
   const [memberWarningeMessage, setMemberWarningeMessage] = useState('');
-  const titleRef = createRef<HTMLInputElement>();
-  const numberOfRecruitRef = createRef<HTMLInputElement>();
-  const locationRef = createRef<HTMLInputElement>();
-  const kakaoLinkRef = createRef<HTMLInputElement>();
-  const kakaoPasswordRef = createRef<HTMLInputElement>();
+  const [defaultDescription, setDefaultDescription] = useState('');
+  const [content, setContent] = useState<any>(Fragment);
+  const titleRef = useRef<HTMLInputElement>();
+  const numberOfRecruitRef = useRef<HTMLInputElement>();
+  const locationRef = useRef<HTMLInputElement>();
+  const kakaoLinkRef = useRef<HTMLInputElement>();
+  const kakaoPasswordRef = useRef<HTMLInputElement>();
   const setMessage = useSetRecoilState(messageHandler);
   const user = useRecoilValue(currentUser);
+  const quillRef = useRef<ReactQuill>(null);
+  const navigation = useNavigate();
 
   const [dayState, setDayState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     dayStateObject
   );
 
-  const quillRef = useRef<ReactQuill>(null);
-  const navigation = useNavigate();
+  const convertStringToHtml = (htmlString: string) => {
+    unified()
+      .use(rehypeParse, { fragment: true })
+      .use(rehypeReact, { createElement, Fragment })
+      .process(htmlString)
+      .then((file) => {
+        setContent(file.result);
+      });
+  };
 
+  useEffect(() => {
+    if (partyID) {
+      getModifyPartyResponse(partyID)
+        .then(({ result }) => {
+          console.log(result);
+          const { party, book, availableDayList } = result;
+          titleRef.current.value = party.title;
+          numberOfRecruitRef.current.value = party.numberOfRecruit.toString();
+          kakaoLinkRef.current.value = party.openChatURL;
+          kakaoPasswordRef.current.value = party.openChatPassword;
+
+          availableDayList.map((availableDay) => {
+            dayStateObject[availableDay].available = true;
+          });
+
+          setDayState(dayStateObject);
+          setIsOnline(party.isOnline);
+          book.authors = book.authors.split(', ');
+          setBook(book);
+          if (!party.isOnline) {
+            locationRef.current.value = `${party.region} ${party.city} ${party.town}`;
+          }
+
+          setValue(party.description);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  const consoleLogChange = (value) => {
+    console.log(value);
+  };
   const imageHandler = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -321,6 +384,16 @@ const Write = () => {
       city: isOnline ? undefined : city,
       town: isOnline ? undefined : town,
     };
+
+    if (partyID) {
+      await updatePartyResponse(partyID, {
+        party,
+        availableDay: availableDayList,
+        book: selectedBook,
+      });
+      navigation('/');
+      return;
+    }
 
     try {
       const response = await registParty({

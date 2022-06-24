@@ -11,6 +11,8 @@ import { getUserProfileResponse } from '../lib/api/user';
 import { mediaQuery } from '../lib/style/media';
 import { User } from '../types/entity';
 import Subject from '../component/common/Subject';
+import { handleAPI } from '../lib/api/common';
+import SkeletonCard from '../component/party/SkeletonCard';
 
 const { useState } = React;
 
@@ -64,16 +66,20 @@ const Profile = () => {
 
   const { isLoading, data, isError } = useQuery<BaseResponse<User>>(
     ['profile', decodedNickname],
-    () => getUserProfileResponse(decodedNickname)
+    () => handleAPI(getUserProfileResponse(decodedNickname))
   );
+
+  if (isError) {
+    console.log(data);
+  }
 
   return (
     <MainTemplate>
       <ContentTemplate>
         {isLoading ? (
-          <ProfileArea>zxcv</ProfileArea>
+          <div>asdf</div>
         ) : (
-          <Inner>
+          <>
             <ProfileArea>
               <RoundImage
                 src={data.result.profileImage}
@@ -87,6 +93,7 @@ const Profile = () => {
               activeSubjectID={activeSubjectID}
               setActiveSubjectID={setActiveSubjectID}
             />
+
             <PartyArea>
               {activeSubjectID === '0' ? (
                 <Participate
@@ -102,7 +109,7 @@ const Profile = () => {
                 />
               )}
             </PartyArea>
-          </Inner>
+          </>
         )}
       </ContentTemplate>
     </MainTemplate>

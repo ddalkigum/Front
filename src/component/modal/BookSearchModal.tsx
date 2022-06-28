@@ -126,15 +126,25 @@ const AbledList = styled.li`
   cursor: pointer;
 `;
 
+const ResultMessageArea = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
   const bookRef = createRef<HTMLInputElement>();
   const [bookTitleForSearch, setBookTitleForSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [currentBookList, setCurrentBookList] = useState<BookList>();
+  const [resultMessage, setResultMessage] = useState('');
   const [pageList, setPageList] = useState<number[]>([]);
 
-  const click = () => {
+  const closeModal = () => {
+    document.body.style.overflowY = null;
     setOpen(!isOpen);
   };
 
@@ -145,11 +155,22 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
     const foundBook = currentBookList.find((item) => item.id === index);
     setBook(foundBook);
     setOpen(!isOpen);
+    document.body.style.overflowY = null;
   };
 
   const searchBook = async (event) => {
     const title = bookRef.current.value;
+
+    // validate title
+    if (title.length < 2) {
+      setResultMessage('2글자 이상 입력해주세요');
+    }
     const response = await getBookList(title, currentPageIndex);
+
+    if (response && !response.result.bookList.length) {
+      setResultMessage('결과가 없어요');
+    }
+
     const foundBookList = response.result.bookList;
     const foundLastPage = response.result.meta.lastPage;
     const lastPage = foundLastPage >= 50 ? LIMIT_PAGE : foundLastPage;
@@ -213,7 +234,7 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
         <CloseArea>
           <CloseIcon
             color="gray"
-            onClick={click}
+            onClick={closeModal}
             width="1rem"
             height="1rem"
           ></CloseIcon>
@@ -223,33 +244,38 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
           <BiSearch size="1.5rem" cursor="pointer" onClick={searchBook} />
         </SearchArea>
         <ResultArea>
-          {currentBookList
-            ? currentBookList
-                .slice(getStartItem(), getLastItem())
-                .map((book) => {
-                  return (
-                    <ItemArea
-                      onClick={getSelectedBook}
-                      key={book.id}
-                      data-index={book.id}
-                    >
-                      <img src={book.thumbnail} />
-                      <div>
-                        <h4>{book.title}</h4>
-                        <h5>
-                          {book.authors.map((author, index) => {
-                            const seperator =
-                              index === book.authors.length - 1 ? ' ' : ', ';
-                            return author + seperator;
-                          })}
-                        </h5>
-                      </div>
-                    </ItemArea>
-                  );
-                })
-            : null}
+          {currentBookList && currentBookList.length ? (
+            currentBookList.slice(getStartItem(), getLastItem()).map((book) => {
+              return (
+                <ItemArea
+                  onClick={getSelectedBook}
+                  key={book.id}
+                  data-index={book.id}
+                >
+                  <img src={book.thumbnail} />
+                  <div>
+                    <h4>{book.title}</h4>
+                    <h5>
+                      {book.authors.map((author, index) => {
+                        const seperator =
+                          index === book.authors.length - 1 ? ' ' : ', ';
+                        return author + seperator;
+                      })}
+                    </h5>
+                  </div>
+                </ItemArea>
+              );
+            })
+          ) : (
+            <ResultMessageArea>
+              {/* <div style={{ width: '5rem', height: '5rem', background: 'red' }}>
+                그림 영역{' '}
+              </div> */}
+              <h4>{resultMessage}</h4>
+            </ResultMessageArea>
+          )}
         </ResultArea>
-        {currentBookList && currentBookList.length > 0 ? (
+        {currentBookList && currentBookList.length ? (
           <PaginationArea>
             <ul>
               {currentPageIndex === 1 ? (

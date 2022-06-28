@@ -1,15 +1,32 @@
 import React from 'react';
-import styled from 'styled-components';
-import MainTemplate from '../component/main/MainTemplate';
-import NotificationLayout from '../container/user/NotificationLayout';
-import ProfileBaseTemplate from '../component/base/ContentTemplate';
+import { useQuery } from 'react-query';
+import MainTemplate from '../component/base/MainTemplate';
+import NotificationLayout from '../container/setting/NotificationLayout';
+import NotFound from '../component/error/NotFound';
+import ProfileLayout from '../container/setting/ProfileLayout';
+import { handleAPI } from '../lib/api/common';
+import { getUserProfileByToken } from '../lib/api/user';
+import ContentTemplate from '../component/base/ContentTemplate';
 
 const Notification = () => {
+  const { data, isLoading } = useQuery(['currentUser'], () =>
+    handleAPI(getUserProfileByToken())
+  );
+
+  if (!isLoading && !data.result) {
+    return <NotFound />;
+  }
+
   return (
     <MainTemplate>
-      <ProfileBaseTemplate>
+      <ContentTemplate>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <ProfileLayout user={data.result} />
+        )}
         <NotificationLayout />
-      </ProfileBaseTemplate>
+      </ContentTemplate>
     </MainTemplate>
   );
 };

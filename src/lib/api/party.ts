@@ -31,7 +31,7 @@ export type InsertParty = Omit<
 >;
 
 export interface PartyContext {
-  party: InsertParty;
+  party: Partial<Party>;
   availableDay: string[];
   availableDayList?: string[];
   book: BookInfo;
@@ -45,14 +45,14 @@ export const getBookList = async (title: string, page: number) => {
   return response.data;
 };
 
-export const registParty = async (context: PartyContext) => {
+export const registPartyResponse = async (context: PartyContext) => {
   const response = await apiClient.post('/v1/party/regist', context);
   return response.data;
 };
 
 export const getPartyList = async (page: number) => {
   const response = await apiClient.get<BaseResponse<MainCard[]>>(
-    '/v1/party/recent'
+    `/v1/party/recent?page=${page}`
   );
   return response.data;
 };
@@ -129,5 +129,12 @@ export const updatePartyResponse = async (
     partyID,
     ...context,
   });
+  return response.data;
+};
+
+export const deletePartyResponse = async (partyID: string) => {
+  const response = await apiClient.delete<BaseResponse<string>>(
+    `/v1/party?id=${partyID}`
+  );
   return response.data;
 };

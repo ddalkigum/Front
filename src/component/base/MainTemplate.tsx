@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../style/theme';
-import Header from '../base/Header';
+import Header from './Header';
 import ShowingMessage from '../common/Message';
 
 export interface MainTemplateProps {
@@ -29,7 +29,6 @@ const MainTemplate = ({ children }: MainTemplateProps) => {
       <Header />
       {children}
       <ShowingMessage />
-      <Footer></Footer>
     </Block>
   );
 };

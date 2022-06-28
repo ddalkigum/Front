@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 import Header from '../component/base/Header';
 import RoundButton from '../component/common/RoundButton';
-import MainTemplate from '../component/main/MainTemplate';
+import NotFound from '../component/error/NotFound';
+import MainTemplate from '../component/base/MainTemplate';
 import {
   checkCertificationCodeResponse,
   signupResponse,
@@ -101,6 +102,10 @@ const Signup = () => {
   const [message, setMessage] = useState('');
   const [safeEmail, setSafeEmail] = useState('');
   const [isLoading, setPage] = useState(false);
+
+  if (!code) {
+    return <NotFound />;
+  }
 
   useEffect(() => {
     const getEmailRequest = async (code: string) => {

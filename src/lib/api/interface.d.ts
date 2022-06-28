@@ -29,5 +29,5 @@ interface CheckCertificationResult {
 }
 
 export type CheckCertificationResponse = BaseResponse<CheckCertificationResult>;
-export type SigninResponse = BaseResponse<User>;
+export type SigninResponse = BaseResponse<User & string>;
 export type IGetUserProfile = BaseResponse<User>;

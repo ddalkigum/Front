@@ -11,6 +11,7 @@ import ContentTemplate from '../../component/base/ContentTemplate';
 import { getKorAvailableDay } from '../../lib/date';
 import {
   cancelJoinResponse,
+  deletePartyResponse,
   getModifyPartyResponse,
   getPartyDetail,
   registNotification,
@@ -21,6 +22,7 @@ import { AvailableDay, Book, Party, User } from '../../types/entity';
 import { mediaQuery } from '../../lib/style/media';
 import { authModalOpen, currentUser, messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
+import CustomModal from '../../component/modal/CustomModal';
 
 const { useState, useEffect, Fragment, createElement } = React;
 
@@ -145,6 +147,7 @@ export interface PartyDetailResult {
 const DetailPageLayout = ({ nickname, slug }) => {
   const navigation = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [customModalIsOpen, setCustomModal] = useState(false);
   const [relationIsLoading, setRelationIsLoading] = useState(false);
   const [isOpen, setOpen] = useRecoilState(authModalOpen);
   const [data, setData] = useState<PartyDetailResult>();
@@ -243,8 +246,47 @@ const DetailPageLayout = ({ nickname, slug }) => {
     navigation(`/write?id=${partyID}`);
   };
 
+  const handleCustomModal = () => {
+    document.body.style.overflowY = 'hidden';
+    setCustomModal(true);
+  };
+
+  const deleteParty = async () => {
+    const partyID = data.party.id;
+    const response = await handleAPI(deletePartyResponse(partyID));
+
+    if (response.status === 'Error') {
+      setMessage({
+        name: 'Fail',
+        message: '문제가 발생했습니다\n\r다시 시도해주세요',
+        status: 'error',
+      });
+    } else {
+      setMessage({
+        name: 'Success',
+        message: '삭제 되었습니다\n\r홈화면으로 이동합니다',
+        status: 'success',
+      });
+    }
+
+    setCustomModal(false);
+    document.body.style.overflowY = null;
+
+    setTimeout(() => {
+      setMessage(null);
+      navigation('/');
+    }, 2000);
+  };
+
   return (
     <ContentTemplate>
+      <CustomModal
+        acceptEvent={deleteParty}
+        isOpen={customModalIsOpen}
+        setOpen={setCustomModal}
+        title="그룹 삭제"
+        message="삭제하시겠습니까?"
+      />
       {isLoading ? (
         <Inner>
           <Title>
@@ -255,10 +297,12 @@ const DetailPageLayout = ({ nickname, slug }) => {
               <RoundImage size="SMALL" src={data.owner.profileImage} />
               <h4>{data.owner.nickname}</h4>
             </OwnerProfileArea>
-            <OwnerOptionArea>
-              <h4 onClick={modifyParty}>수정</h4>
-              <h4>삭제</h4>
-            </OwnerOptionArea>
+            {data.participant.isOwner ? (
+              <OwnerOptionArea>
+                <h4 onClick={modifyParty}>수정</h4>
+                <h4 onClick={handleCustomModal}>삭제</h4>
+              </OwnerOptionArea>
+            ) : null}
           </OwnerArea>
           <ConditionArea>
             <DetailConditionArea>

@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import Header from '../component/base/Header';
-import MainTemplate from '../component/main/MainTemplate';
+import MainTemplate from '../component/base/MainTemplate';
 import HomeLayout from '../container/home/HomeLayout';
 import { mediaQuery } from '../lib/style/media';
-
-const { useEffect } = React;
 
 const Block = styled.div`
   width: 100%;

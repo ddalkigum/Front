@@ -2,50 +2,18 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import RoundImage from '../component/common/RoundImage';
-import MainTemplate from '../component/main/MainTemplate';
-import Participate from '../container/party/Participate';
+import MainTemplate from '../component/base/MainTemplate';
 import ContentTemplate from '../component/base/ContentTemplate';
 import { BaseResponse } from '../lib/api/interface';
 import { getUserProfileResponse } from '../lib/api/user';
-import { mediaQuery } from '../lib/style/media';
 import { User } from '../types/entity';
 import Subject from '../component/common/Subject';
 import { handleAPI } from '../lib/api/common';
-import SkeletonCard from '../component/party/SkeletonCard';
+import NotFound from '../component/error/NotFound';
+import ProfileLayout from '../container/setting/ProfileLayout';
+import ParticipateParty from '../container/setting/ParticipateParty';
 
 const { useState } = React;
-
-const Block = styled.div`
-  width: 100%;
-  height: 100%;
-  margin: auto;
-
-  ${mediaQuery(1919)} {
-    width: 1376px;
-  }
-  ${mediaQuery(1440)} {
-    width: 1024px;
-  }
-  ${mediaQuery(1056)} {
-    width: calc(100% - 2rem);
-  }
-`;
-
-const Inner = styled.div`
-  height: 100%;
-  margin: auto;
-`;
-
-const ProfileArea = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 5rem;
-
-  img {
-    margin-right: 2rem;
-  }
-`;
 
 const PartyArea = styled.div`
   display: flex;
@@ -54,8 +22,8 @@ const PartyArea = styled.div`
 `;
 
 const subjectList = [
-  { id: '0', name: '생성한 그룹' },
-  { id: '1', name: '참여한 그룹' },
+  { id: '0', name: '생성한 그룹', description: 'create' },
+  { id: '1', name: '참여한 그룹', description: 'join' },
 ];
 
 const Profile = () => {
@@ -69,46 +37,27 @@ const Profile = () => {
     () => handleAPI(getUserProfileResponse(decodedNickname))
   );
 
-  if (isError) {
-    console.log(data);
+  if (!isLoading && data.result.name === 'NotFound') {
+    return <NotFound />;
   }
 
   return (
     <MainTemplate>
       <ContentTemplate>
         {isLoading ? (
-          <div>asdf</div>
+          <div>Loading...</div>
         ) : (
           <>
-            <ProfileArea>
-              <RoundImage
-                src={data.result.profileImage}
-                size="LARGE"
-              ></RoundImage>
-              <h2>{data.result.nickname}</h2>
-            </ProfileArea>
-
+            <ProfileLayout user={data.result} />
             <Subject
               subjectList={subjectList}
               activeSubjectID={activeSubjectID}
               setActiveSubjectID={setActiveSubjectID}
             />
-
-            <PartyArea>
-              {activeSubjectID === '0' ? (
-                <Participate
-                  userID={data.result.id}
-                  userNikcname={data.result.nickname}
-                  index="0"
-                />
-              ) : (
-                <Participate
-                  userID={data.result.id}
-                  userNikcname={data.result.nickname}
-                  index="1"
-                />
-              )}
-            </PartyArea>
+            <ParticipateParty
+              user={data.result}
+              subjectIndex={activeSubjectID}
+            />
           </>
         )}
       </ContentTemplate>

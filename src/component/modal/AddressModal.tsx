@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useInjectKakaoMapApi, Map, MapMarker } from 'react-kakao-maps-sdk';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { theme } from '../../style/theme';
 import CloseIcon from '../icon/Close';
 import RoundButton from '../common/RoundButton';
@@ -65,6 +65,7 @@ const AddressModal = ({
   });
 
   const closeModal = () => {
+    document.body.style.overflowY = null;
     setOpen(!isOpen);
   };
 
@@ -85,6 +86,7 @@ const AddressModal = ({
     if (!currentAddress) {
       alert('위치를 선택해주세요');
     } else {
+      document.body.style.overflowY = null;
       setOpen(!isOpen);
     }
   };

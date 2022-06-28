@@ -2,7 +2,7 @@ import React from 'react';
 import GlobalStyle from './GlobalStyle';
 import './font.css';
 import Router from './Router';
-import AuthModal from './component/auth/AuthModal';
+import AuthModal from './component/modal/AuthModal';
 
 const App: React.FC = () => {
   return (

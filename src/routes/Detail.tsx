@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
-import MainTemplate from '../component/main/MainTemplate';
+import MainTemplate from '../component/base/MainTemplate';
 import DetailPageLayout from '../container/party/DetailLayout';
 
 const Detail = () => {

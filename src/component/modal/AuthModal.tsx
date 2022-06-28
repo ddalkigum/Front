@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { authModalOpen } from '../../atom';
 import { sendEmailResponse } from '../../lib/api/auth';
@@ -103,6 +103,7 @@ const AuthModal: React.FC<{}> = () => {
   const [isSafeMail, setIsSafeMail] = useState(true);
 
   const closeModal = () => {
+    document.body.style.overflowY = null;
     setOpen(false);
     setSendMail(false);
     setIsSafeMail(true);
@@ -116,7 +117,7 @@ const AuthModal: React.FC<{}> = () => {
       return '';
     }
 
-    const response = await sendEmailResponse(email);
+    await sendEmailResponse(email);
 
     setSendMail(!isSendMail);
   };

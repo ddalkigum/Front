@@ -12,7 +12,6 @@ import { mediaQuery } from '../../lib/style/media';
 
 const Block = styled.div`
   width: calc(24% - 1rem);
-  height: 100%;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   cursor: pointer;
 

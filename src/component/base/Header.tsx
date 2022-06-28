@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useRecoilState } from 'recoil';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import RoundButton from '../common/RoundButton';
@@ -10,7 +10,7 @@ import RoundImage from '../common/RoundImage';
 import { getUserProfile } from '../../lib/api/user';
 import SettingBar from './SettingBar';
 
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const Block = styled.div`
   height: 4rem;
@@ -52,26 +52,27 @@ const ProfileBox = styled.div`
 
 const Header = ({ condition }: { condition?: string }) => {
   const navigation = useNavigate();
+  const location = useLocation();
   const [isOpen, setOpen] = useRecoilState(authModalOpen);
   const [user, setUser] = useRecoilState(currentUser);
   const [SettingBarIsOpen, setSettingBarOpen] = useState(false);
 
   const setUserProfile = async () => {
-    let currentUser;
+    let safeUser;
     const localStorageUser = localStorage.getItem('currentUser');
 
     if (!localStorageUser) {
-      currentUser = await getUserProfile();
-      if (currentUser === 'DoesNotExistToken') {
+      safeUser = await getUserProfile();
+      if (safeUser === 'DoesNotExistToken') {
         return;
       }
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      setUser(currentUser);
+      localStorage.setItem('currentUser', JSON.stringify(safeUser));
+      setUser(safeUser);
       return;
     }
 
-    currentUser = JSON.parse(localStorageUser);
-    setUser(currentUser);
+    safeUser = JSON.parse(localStorageUser);
+    setUser(safeUser);
   };
 
   useEffect(() => {
@@ -79,6 +80,7 @@ const Header = ({ condition }: { condition?: string }) => {
   }, []);
 
   const openLoginModal = () => {
+    document.body.style.overflowY = 'hidden';
     setOpen(true);
   };
 
@@ -92,6 +94,11 @@ const Header = ({ condition }: { condition?: string }) => {
   };
 
   const moveHomePage = () => {
+    const currentLocation = location.pathname;
+
+    if (currentLocation === '/') {
+      return window.location.reload();
+    }
     navigation('/');
   };
 
@@ -101,14 +108,15 @@ const Header = ({ condition }: { condition?: string }) => {
         <Title onClick={moveHomePage}>DeBook</Title>
         {condition === 'signup' ? null : (
           <InfoBox>
-            <RoundButton
-              color="blue"
-              size="DEFAULT"
-              text="모집하기"
-              onClick={moveWritePage}
-            />
             {user ? (
               <>
+                <RoundButton
+                  color="blue"
+                  size="DEFAULT"
+                  text="모집하기"
+                  onClick={moveWritePage}
+                />
+
                 <ProfileBox onClick={handleSettingCategory}>
                   <RoundImage size="SMALL" src={user.profileImage}></RoundImage>
                   <h5>{user.nickname}</h5>

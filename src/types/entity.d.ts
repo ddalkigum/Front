@@ -36,7 +36,7 @@ export interface Participant extends DateTime {
 
 export interface Book {
   id: string;
-  authors: string;
+  authors: string & string[];
   title: string;
   thumbnail: string;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useSetRecoilState } from 'recoil';
-import { messageHandler } from '../atom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { messageHandler, userHandler } from '../atom';
 import NotFound from '../component/error/NotFound';
 import { signinResponse } from '../lib/api/auth';
 import { handleAPI } from '../lib/api/common';
@@ -13,6 +13,7 @@ const Signin = () => {
   const navigation = useNavigate();
   const queryString = window.location.search;
   const code = queryString.split('=')[1];
+  const [user, setUser] = useRecoilState(userHandler);
 
   if (!code) {
     return <NotFound />;
@@ -48,11 +49,8 @@ const Signin = () => {
         return;
       }
 
-      const { id, email, nickname, profileImage } = result;
-      localStorage.setItem(
-        'currentUser',
-        JSON.stringify({ id, email, nickname, profileImage })
-      );
+      setUser(result);
+      localStorage.setItem('currentUser', JSON.stringify(result));
       navigation('/');
     });
   }, []);

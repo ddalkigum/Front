@@ -38,7 +38,7 @@ const MessageArea = styled.div<{ isOpen; status }>`
   border-radius: 1rem;
   margin: auto;
   width: fit-content;
-  padding: 2rem;
+  padding: 1rem 2rem;
   animation: ${fadeIn} 1s ease-in-out;
 `;
 

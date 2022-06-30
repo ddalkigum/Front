@@ -77,7 +77,7 @@ const Editor = ({
         container: [
           ['image'],
           [{ header: [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+          ['bold', 'italic', 'strike'],
         ],
         handlers: {
           image: imageHandler,

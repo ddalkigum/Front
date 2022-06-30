@@ -1,11 +1,11 @@
 import { atom } from 'recoil';
 
-export const authModalOpen = atom({
+export const authModalHandler = atom({
   key: 'authModalisOpen',
   default: false,
 });
 
-export const currentUser = atom<{
+export const userHandler = atom<{
   id: number;
   nickname: string;
   profileImage: string;
@@ -13,7 +13,7 @@ export const currentUser = atom<{
   createdAt: Date;
   updatedAt: Date;
 }>({
-  key: 'currentUser',
+  key: 'userHandler',
   default: null,
 });
 

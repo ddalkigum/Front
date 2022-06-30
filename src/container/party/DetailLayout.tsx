@@ -12,7 +12,6 @@ import { getKorAvailableDay } from '../../lib/date';
 import {
   cancelJoinResponse,
   deletePartyResponse,
-  getModifyPartyResponse,
   getPartyDetail,
   registNotification,
   requestParticipateResponse,
@@ -20,7 +19,7 @@ import {
 import { theme } from '../../style/theme';
 import { AvailableDay, Book, Party, User } from '../../types/entity';
 import { mediaQuery } from '../../lib/style/media';
-import { authModalOpen, currentUser, messageHandler } from '../../atom';
+import { authModalHandler, userHandler, messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
 import CustomModal from '../../component/modal/CustomModal';
 
@@ -149,10 +148,10 @@ const DetailPageLayout = ({ nickname, slug }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [customModalIsOpen, setCustomModal] = useState(false);
   const [relationIsLoading, setRelationIsLoading] = useState(false);
-  const [isOpen, setOpen] = useRecoilState(authModalOpen);
+  const [isOpen, setOpen] = useRecoilState(authModalHandler);
   const [data, setData] = useState<PartyDetailResult>();
   const [content, setContent] = useState<any>(Fragment);
-  const [user, setUSer] = useRecoilState(currentUser);
+  const [user, setUSer] = useRecoilState(userHandler);
   const setMessage = useSetRecoilState(messageHandler);
 
   useEffect(() => {
@@ -161,8 +160,6 @@ const DetailPageLayout = ({ nickname, slug }) => {
       setIsLoading(true);
       convertStringToHtml(result.party.description);
     });
-    // TODO: relation group get api client
-    // relation group set = true
   }, []);
 
   const convertStringToHtml = (htmlString: string) => {
@@ -362,9 +359,9 @@ const DetailPageLayout = ({ nickname, slug }) => {
               />
             )}
           </ApplyButtonArea>
-          <SubTitle>
+          {/* <SubTitle>
             <h3>비슷한 그룹</h3>
-          </SubTitle>
+          </SubTitle> */}
           {/* {relationPartyList.map(party => {
               
             <PartyCard party={party}/>

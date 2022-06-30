@@ -1,8 +1,8 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { currentUser } from '../atom';
+import { userHandler, messageHandler } from '../atom';
 import RoundButton, { Color } from '../component/common/RoundButton';
 import MainTemplate from '../component/base/MainTemplate';
 import { uploadImage } from '../lib/api/image';
@@ -27,8 +27,9 @@ const ButtonArea = styled.div`
 `;
 
 const Setting = () => {
-  const [user, setUser] = useRecoilState(currentUser);
+  const [user, setUser] = useRecoilState(userHandler);
   const [isOpenCustomModal, setCustomModal] = useState(false);
+  const setMessage = useSetRecoilState(messageHandler);
   const [uploadButton, setUploadButton] = useState<{
     name: string;
     color: Color;
@@ -54,12 +55,22 @@ const Setting = () => {
     input.type = 'file';
     input.onchange = async () => {
       setUploadButton({ name: '업로드 중...', color: 'gray' });
-      const response = await uploadImage(
-        data.result,
-        input.files[0],
-        'profile'
+      const response = await handleAPI(
+        uploadImage(data.result, input.files[0], 'profile')
       );
 
+      if (response.result.message === 'NotSupportedType') {
+        setMessage({
+          name: 'fail',
+          message: 'png, jpg, jpeg형식만 가능해요',
+          status: 'error',
+        });
+
+        setTimeout(() => {
+          setMessage(null);
+        }, 1500);
+        return;
+      }
       const imageURL = response.result;
       const updatedUser = deepClone<User>(data.result);
       updatedUser.profileImage = imageURL;

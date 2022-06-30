@@ -23,9 +23,11 @@ const Notification = () => {
         {isLoading ? (
           <div>Loading...</div>
         ) : (
-          <ProfileLayout user={data.result} />
+          <>
+            <ProfileLayout user={data.result} />
+            <NotificationLayout />
+          </>
         )}
-        <NotificationLayout />
       </ContentTemplate>
     </MainTemplate>
   );

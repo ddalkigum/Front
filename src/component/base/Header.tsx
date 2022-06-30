@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 import { useLocation, useNavigate } from 'react-router';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import RoundButton from '../common/RoundButton';
 import { theme } from '../../style/theme';
-import { authModalOpen, currentUser } from '../../atom';
+import { authModalHandler, messageHandler, userHandler } from '../../atom';
 import RoundImage from '../common/RoundImage';
-import { getUserProfile } from '../../lib/api/user';
 import SettingBar from './SettingBar';
+import { handleAPI } from '../../lib/api/common';
+import { getUserProfileByToken } from '../../lib/api/user';
+import useRequest from '../../lib/hooks/useRequest';
+import { User } from '../../types/entity';
 
 const { useState, useEffect } = React;
 
@@ -53,31 +57,20 @@ const ProfileBox = styled.div`
 const Header = ({ condition }: { condition?: string }) => {
   const navigation = useNavigate();
   const location = useLocation();
-  const [isOpen, setOpen] = useRecoilState(authModalOpen);
-  const [user, setUser] = useRecoilState(currentUser);
+  const [isOpen, setOpen] = useRecoilState(authModalHandler);
+  const [user, setUser] = useRecoilState(userHandler);
   const [SettingBarIsOpen, setSettingBarOpen] = useState(false);
+  const setMessage = useSetRecoilState(messageHandler);
 
-  const setUserProfile = async () => {
-    let safeUser;
-    const localStorageUser = localStorage.getItem('currentUser');
-
-    if (!localStorageUser) {
-      safeUser = await getUserProfile();
-      if (safeUser === 'DoesNotExistToken') {
-        return;
+  if (!user) {
+    handleAPI(getUserProfileByToken()).then((response) => {
+      const user = response.result;
+      if (user) {
+        setUser(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
       }
-      localStorage.setItem('currentUser', JSON.stringify(safeUser));
-      setUser(safeUser);
-      return;
-    }
-
-    safeUser = JSON.parse(localStorageUser);
-    setUser(safeUser);
-  };
-
-  useEffect(() => {
-    setUserProfile();
-  }, []);
+    });
+  }
 
   const openLoginModal = () => {
     document.body.style.overflowY = 'hidden';
@@ -89,7 +82,6 @@ const Header = ({ condition }: { condition?: string }) => {
   };
 
   const moveWritePage = async () => {
-    await setUserProfile();
     navigation('/write');
   };
 

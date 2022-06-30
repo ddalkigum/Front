@@ -15,21 +15,6 @@ export const getUserProfileByToken = async () => {
   return response.data;
 };
 
-export const secession = async (nickname: string, accessToken: string) => {
-  const encodedNickname = encodeURIComponent(nickname);
-  const response = await apiClient.delete<BaseResponse<string>>(
-    `/v1/user/session/${encodedNickname}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
-  return response.data;
-};
-
-export const getUserProfile = async () => {
-  const userResponse = await getUserProfileByToken();
-  const currentUser = userResponse.result;
-  return currentUser;
-};
-
 export const updateUserProfileResponse = async (
   updateCondition: Partial<User>
 ) => {

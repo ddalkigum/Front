@@ -46,6 +46,7 @@ const PaginationArea = styled.div`
   width: 100%;
   height: 5rem;
   bottom: 0;
+  left: 0;
   border-top: 1px solid ${theme.line};
 
   animation: ${fadeBottom} 0.3s ease-in;
@@ -101,7 +102,7 @@ const HomeLayout = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  });
+  }, [onScroll]);
 
   useEffect(() => {
     handleAPI(getPartyList(page)).then(({ result, status }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { authModalOpen } from '../../atom';
+import { authModalHandler } from '../../atom';
 import { sendEmailResponse } from '../../lib/api/auth';
 import { theme } from '../../style/theme';
 import RoundButton from '../common/RoundButton';
@@ -97,7 +97,7 @@ const validateEmail = (email: string) => {
 
 const AuthModal: React.FC<{}> = () => {
   const emailInput = React.createRef<HTMLInputElement>();
-  const [isOpen, setOpen] = useRecoilState(authModalOpen);
+  const [isOpen, setOpen] = useRecoilState(authModalHandler);
   const [isSignupPage, setSignupPage] = useState(false);
   const [isSendMail, setSendMail] = useState(false);
   const [isSafeMail, setIsSafeMail] = useState(true);

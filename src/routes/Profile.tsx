@@ -37,7 +37,7 @@ const Profile = () => {
     () => handleAPI(getUserProfileResponse(decodedNickname))
   );
 
-  if (!isLoading && data.result.name === 'NotFound') {
+  if (!isLoading && !data.result) {
     return <NotFound />;
   }
 

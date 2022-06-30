@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled, { css, keyframes } from 'styled-components';
-import { currentUser } from '../../atom';
+import { userHandler } from '../../atom';
 import { logoutResponse } from '../../lib/api/auth';
 import { theme } from '../../style/theme';
 
@@ -57,7 +57,7 @@ const CategoryArea = styled.li`
 `;
 
 const SettingBar = ({ isOpen, user }) => {
-  const setUser = useSetRecoilState(currentUser);
+  const setUser = useSetRecoilState(userHandler);
   const navigation = useNavigate();
 
   const clearUserHistory = () => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { BsFillCaretDownFill } from 'react-icons/bs';
@@ -11,8 +10,6 @@ import RoundImage from '../common/RoundImage';
 import SettingBar from './SettingBar';
 import { handleAPI } from '../../lib/api/common';
 import { getUserProfileByToken } from '../../lib/api/user';
-import useRequest from '../../lib/hooks/useRequest';
-import { User } from '../../types/entity';
 
 const { useState, useEffect } = React;
 

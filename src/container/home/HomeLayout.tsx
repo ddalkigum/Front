@@ -10,12 +10,14 @@ import { getScrollBottom } from '../../lib/util';
 import { theme } from '../../style/theme';
 import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
+import HomeSearch from '../../component/search/HomeSearch';
 
 const { useState, useEffect, useRef, useCallback } = React;
 
 const Block = styled.div`
   width: 100%;
   overflow: scroll;
+  padding: 0 0.1rem;
 `;
 
 const Inner = styled.div`
@@ -83,9 +85,7 @@ const HomeLayout = () => {
   const [page, setPage] = useState<number>(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [showPagination, setShowPagination] = useState(true);
-  const innerRef = useRef<HTMLDivElement>();
   const setMessage = useSetRecoilState(messageHandler);
-  const navigation = useNavigate();
 
   const onScroll = useCallback(() => {
     const scrollBottom = getScrollBottom();
@@ -138,7 +138,8 @@ const HomeLayout = () => {
 
   return (
     <Block>
-      <Inner ref={innerRef}>
+      <HomeSearch />
+      <Inner>
         {isLoading
           ? Array.from({ length: 12 }).map((value, index) => {
               return <SkeletonCard key={index} />;

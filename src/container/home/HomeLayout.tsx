@@ -75,7 +75,7 @@ export interface MainCard {
   isOwner?: boolean;
 }
 
-const ITEM_COUNT = 12;
+const ITEM_COUNT = 24;
 
 const HomeLayout = () => {
   const [partyList, setPartyList] = useState<MainCard[]>([]);

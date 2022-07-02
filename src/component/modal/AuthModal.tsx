@@ -2,7 +2,8 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { authModalHandler } from '../../atom';
-import { sendEmailResponse } from '../../lib/api/auth';
+import { config } from '../../config';
+import { sendEmailResponse, googleSigninResponse } from '../../lib/api/auth';
 import { theme } from '../../style/theme';
 import RoundButton from '../common/RoundButton';
 import CloseIcon from '../icon/Close';
@@ -46,6 +47,7 @@ const SubTitleArea = styled.div`
 const EmailInputArea = styled.form<{ isSafe: boolean }>`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1rem;
 
   input {
     width: 80%;
@@ -62,9 +64,13 @@ const EmailInputArea = styled.form<{ isSafe: boolean }>`
 
 const SocialLoginArea = styled.div``;
 
+const GoogleButtonArea = styled.a`
+  cursor: pointer;
+`;
+
 const InfoArea = styled.div`
   padding: 1rem 0;
-  line-height: 1.5rem;
+  line-height: 2rem;
 `;
 
 const ChangeModeText = styled.h3`
@@ -127,6 +133,13 @@ const AuthModal: React.FC<{}> = () => {
     setSendMail(false);
   };
 
+  const googleSignin = async (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    const provider = event.currentTarget.getAttribute('data-index');
+    await googleSigninResponse(provider);
+  };
+
   const signup = { text: '회원가입', info: '이미 회원이신가요?', to: '로그인' };
   const signin = {
     text: '로그인',
@@ -182,7 +195,13 @@ const AuthModal: React.FC<{}> = () => {
             <h4>소셜계정으로 {mode.text}하기</h4>
           </SubTitleArea>
           <SocialLoginArea>
-            <GoogleIcon></GoogleIcon>
+            <GoogleButtonArea
+              href={`${config.server.baseURL}/v1/auth/redirect?provider=google`}
+              data-index="google"
+              onClick={googleSignin}
+            >
+              <GoogleIcon></GoogleIcon>
+            </GoogleButtonArea>
           </SocialLoginArea>
           <InfoArea>
             <h5>{mode.info}</h5>

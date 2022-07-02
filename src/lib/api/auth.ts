@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import apiClient from './client';
 import {
   BaseResponse,
@@ -54,5 +53,10 @@ export const logoutResponse = async () => {
   const response = await apiClient.delete<BaseResponse<string>>(
     '/v1/auth/logout'
   );
+  return response.data;
+};
+
+export const googleSigninResponse = async (provider: string) => {
+  const response = await apiClient.get(`v1/auth/redirect?provider=${provider}`);
   return response.data;
 };

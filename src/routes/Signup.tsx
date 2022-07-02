@@ -85,7 +85,7 @@ const validateNickname = (nickname: string) => {
     return '닉네임은 10자까지 가능해요.';
   }
 
-  const regex = /^[a-z가-힣0-9-_]{3,20}$/;
+  const regex = /^[a-zA-Z가-힣0-9-_]{3,20}$/;
   if (!regex.test(nickname)) {
     return '닉네임은 3~10자 알파벳, 한글, 숫자, -, _ 로 만들어주세요.';
   }

@@ -49,7 +49,6 @@ const Signin = () => {
         return;
       }
 
-      setUser(result);
       localStorage.setItem('currentUser', JSON.stringify(result));
       navigation('/');
     });

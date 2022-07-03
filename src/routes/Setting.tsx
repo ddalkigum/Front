@@ -27,10 +27,10 @@ const ButtonArea = styled.div`
 `;
 
 const Setting = () => {
-  const [user, setUser] = useRecoilState(userHandler);
+  const [_, setUser] = useRecoilState(userHandler);
   const [isOpenCustomModal, setCustomModal] = useState(false);
   const setMessage = useSetRecoilState(messageHandler);
-  const [uploadButton, setUploadButton] = useState<{
+  const [__, setUploadButton] = useState<{
     name: string;
     color: Color;
   }>({

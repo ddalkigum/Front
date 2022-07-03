@@ -122,6 +122,7 @@ const BookInfoArea = styled.div`
 `;
 
 const DescriptionArea = styled.div`
+  font-family: sans-serif;
   margin: 5rem 0;
 `;
 

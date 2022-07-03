@@ -83,18 +83,6 @@ export const requestParticipateResponse = async (
   return response.data;
 };
 
-export const modifyParticipateResponse = async (
-  partyID: string,
-  participateID
-) => {
-  const response = await apiClient.patch<BaseResponse<string>>(
-    '/v1/party/participate',
-    {
-      partyID,
-    }
-  );
-};
-
 export const registNotification = async (partyID: string) => {
   const response = await apiClient.post('/v1/party/notification', { partyID });
   return response.data;

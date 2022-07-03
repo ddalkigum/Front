@@ -1,8 +1,6 @@
-import { AxiosError } from 'axios';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
-import Header from '../component/base/Header';
 import RoundButton from '../component/common/RoundButton';
 import NotFound from '../component/error/NotFound';
 import MainTemplate from '../component/base/MainTemplate';
@@ -12,6 +10,8 @@ import {
 } from '../lib/api/auth';
 import { mediaQuery } from '../lib/style/media';
 import { theme } from '../style/theme';
+import { handleAPI } from '../lib/api/common';
+import useSetMessage from '../lib/hooks/useSetMessage';
 
 const { useState, useEffect } = React;
 
@@ -99,7 +99,6 @@ const Signup = () => {
 
   const nicknameInput = React.createRef<HTMLInputElement>();
   const [isDuplicate, setDuplicate] = useState(false);
-  const [message, setMessage] = useState('');
   const [safeEmail, setSafeEmail] = useState('');
   const [isLoading, setPage] = useState(false);
 
@@ -110,7 +109,7 @@ const Signup = () => {
   useEffect(() => {
     const getEmailRequest = async (code: string) => {
       const response = await checkCertificationCodeResponse(code);
-      const { email, isSignup } = response.result;
+      const { email } = response.result;
 
       if (response.result.message === 'DoesNotExistCertification') {
         navigation('/');
@@ -125,37 +124,33 @@ const Signup = () => {
     }
   }, ['']);
 
-  const signupRequest = async (event) => {
-    event.preventDefault();
-    setMessage('');
+  const signupRequest = async () => {
     const nickname = nicknameInput.current.value;
     const result = validateNickname(nickname);
 
     if (result) {
-      setMessage(result);
-      setDuplicate(true);
+      useSetMessage('error', result, 'error');
       return;
     }
 
     setDuplicate(false);
 
-    try {
-      const response = await signupResponse(code, safeEmail, nickname);
-      const cleanUser = {
-        id: response.result.id,
-        nickname: response.result.nickname,
-        profileImage: response.result.profileImage,
-      };
+    const response = await handleAPI(signupResponse(code, safeEmail, nickname));
 
-      localStorage.setItem('currentUser', JSON.stringify(cleanUser));
-      navigation('/');
-    } catch (error) {
-      if (error.response.data.result.message === 'AlreadyExistNickname') {
-        setMessage('중복된 닉네임입니다');
-        setTimeout(() => setMessage(''), 2000);
-        setDuplicate(true);
+    if (response.status === 'Error') {
+      if (response.result.message === 'AlreadyExistNickname') {
+        useSetMessage('error', '이미 존재하는 닉네임입니다', 'error');
+        return;
       }
     }
+    const cleanUser = {
+      id: response.result.id,
+      nickname: response.result.nickname,
+      profileImage: response.result.profileImage,
+    };
+
+    localStorage.setItem('currentUser', JSON.stringify(cleanUser));
+    navigation('/');
   };
 
   return (
@@ -184,7 +179,6 @@ const Signup = () => {
               />
             </NicknameInputArea>
             <CheckSignupArea>
-              {isDuplicate ? <span>{message}</span> : <span>&nbsp;</span>}
               <RoundButton
                 color="blue"
                 size="LARGE"

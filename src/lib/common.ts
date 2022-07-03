@@ -1,5 +1,3 @@
-import { User } from '../types/entity';
-
 export const deepClone = <T>(object: any): T => {
   const clone = {};
 

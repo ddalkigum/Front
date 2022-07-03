@@ -20,6 +20,7 @@ const ParticipateParty = ({ user, subjectIndex }) => {
     [user.nickname, 'participate', page],
     () => handleAPI(getParticipatePartyList(user.id))
   );
+
   return (
     <Block>
       {isLoading

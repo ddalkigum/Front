@@ -1,5 +1,4 @@
 import React from 'react';
-import { AxiosPromise, AxiosInstance } from 'axios';
 import { BaseResponse } from '../api/interface';
 
 const { useCallback, useState } = React;

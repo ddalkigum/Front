@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { messageHandler, userHandler } from '../atom';
+import { useSetRecoilState } from 'recoil';
+import { messageHandler } from '../atom';
 import NotFound from '../component/error/NotFound';
 import { signinResponse } from '../lib/api/auth';
 import { handleAPI } from '../lib/api/common';
@@ -13,7 +13,6 @@ const Signin = () => {
   const navigation = useNavigate();
   const queryString = window.location.search;
   const code = queryString.split('=')[1];
-  const [user, setUser] = useRecoilState(userHandler);
 
   if (!code) {
     return <NotFound />;

@@ -5,7 +5,9 @@ export async function handleAPI<T>(api: Promise<T>): Promise<T> {
     return await api;
   } catch (error) {
     if (error.response.status === 500) {
-      Sentry.captureException(error.response);
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(error.response);
+      }
     }
 
     if (error.response) {

@@ -1,9 +1,11 @@
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { authModalHandler } from '../../atom';
+import { authModalHandler, messageHandler } from '../../atom';
 import { config } from '../../config';
 import { sendEmailResponse, googleSigninResponse } from '../../lib/api/auth';
+import { handleAPI } from '../../lib/api/common';
+import useSetMessage from '../../lib/hooks/useSetMessage';
 import { theme } from '../../style/theme';
 import RoundButton from '../common/RoundButton';
 import CloseIcon from '../icon/Close';
@@ -18,7 +20,8 @@ const ModalBlock = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.4);
 `;
 
 const Modal = styled.div`
@@ -103,6 +106,7 @@ const validateEmail = (email: string) => {
 
 const AuthModal: React.FC<{}> = () => {
   const emailInput = React.createRef<HTMLInputElement>();
+  const setMessage = useSetRecoilState(messageHandler);
   const [isOpen, setOpen] = useRecoilState(authModalHandler);
   const [isSignupPage, setSignupPage] = useState(false);
   const [isSendMail, setSendMail] = useState(false);
@@ -115,6 +119,10 @@ const AuthModal: React.FC<{}> = () => {
     setIsSafeMail(true);
   };
 
+  const resetErrorMessage = () => {
+    setIsSafeMail(true);
+  };
+
   const sendAuthEmail = async (event) => {
     event.preventDefault();
     const email = emailInput.current.value;
@@ -123,21 +131,26 @@ const AuthModal: React.FC<{}> = () => {
       return '';
     }
 
-    await sendEmailResponse(email);
+    const response = await handleAPI(sendEmailResponse(email));
+    const { status, result } = response;
 
+    if (status !== 'Success') {
+      setMessage({
+        name: 'Errir',
+        message: '문제가 발생했습니다\n\r계속 발생한다면 문의메일을 보내주세요',
+        status: 'error',
+      });
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+      return;
+    }
     setSendMail(!isSendMail);
   };
 
   const changeMode = () => {
     setSignupPage(!isSignupPage);
     setSendMail(false);
-  };
-
-  const googleSignin = async (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    const provider = event.currentTarget.getAttribute('data-index');
-    await googleSigninResponse(provider);
   };
 
   const signup = { text: '회원가입', info: '이미 회원이신가요?', to: '로그인' };
@@ -150,66 +163,67 @@ const AuthModal: React.FC<{}> = () => {
   const mode = isSignupPage ? signup : signin;
 
   return isOpen ? (
-    <>
-      <ModalBlock>
-        <Modal>
-          <CloseArea>
-            <CloseIcon
-              onClick={closeModal}
-              color={theme.subText}
-              width="1rem"
-              height="1rem"
-            ></CloseIcon>
-          </CloseArea>
-          <TitleArea>
-            <h2>{mode.text}</h2>
-          </TitleArea>
-          <SubTitleArea>
-            <h4>이메일로 {mode.text}하기</h4>
-          </SubTitleArea>
-          {isSafeMail ? (
-            <ErrorMessage>&nbsp;</ErrorMessage>
-          ) : (
-            <ErrorMessage>잘못된 형식입니다</ErrorMessage>
-          )}
-          {isSendMail ? (
-            <SuccessSendMail>
-              <h4>{mode.text} 링크가 발송되었습니다.</h4>
-            </SuccessSendMail>
-          ) : (
-            <EmailInputArea isSafe={isSafeMail} onSubmit={sendAuthEmail}>
-              <input
-                type="text"
-                placeholder="이메일을 입력해주세요."
-                ref={emailInput}
-              ></input>
-              <RoundButton
-                size="DEFAULT"
-                color="blue"
-                text={mode.text}
-                type="submit"
-              ></RoundButton>
-            </EmailInputArea>
-          )}
-          <SubTitleArea>
-            <h4>소셜계정으로 {mode.text}하기</h4>
-          </SubTitleArea>
-          <SocialLoginArea>
-            <GoogleButtonArea
-              href={`${config.server.baseURL}/v1/auth/redirect?provider=google`}
-              data-index="google"
-              onClick={googleSignin}
-            >
-              <GoogleIcon></GoogleIcon>
-            </GoogleButtonArea>
-          </SocialLoginArea>
-          <InfoArea>
-            <h5>{mode.info}</h5>
-            <ChangeModeText onClick={changeMode}>{mode.to}하기</ChangeModeText>
-          </InfoArea>
-        </Modal>
-      </ModalBlock>
-    </>
+    <ModalBlock>
+      <Modal>
+        <CloseArea>
+          <CloseIcon
+            onClick={closeModal}
+            color={theme.subText}
+            width="1rem"
+            height="1rem"
+          ></CloseIcon>
+        </CloseArea>
+        <TitleArea>
+          <h2>{mode.text}</h2>
+        </TitleArea>
+        <SubTitleArea>
+          <h4>이메일로 {mode.text}하기</h4>
+        </SubTitleArea>
+        {isSafeMail ? (
+          <ErrorMessage>&nbsp;</ErrorMessage>
+        ) : (
+          <ErrorMessage>잘못된 형식입니다</ErrorMessage>
+        )}
+        {isSendMail ? (
+          <SuccessSendMail>
+            <h4>{mode.text} 링크가 발송되었습니다.</h4>
+          </SuccessSendMail>
+        ) : (
+          <EmailInputArea
+            isSafe={isSafeMail}
+            onSubmit={sendAuthEmail}
+            onChange={resetErrorMessage}
+          >
+            <input
+              type="text"
+              placeholder="이메일을 입력해주세요."
+              ref={emailInput}
+            ></input>
+            <RoundButton
+              size="DEFAULT"
+              color="blue"
+              text={mode.text}
+              type="submit"
+            ></RoundButton>
+          </EmailInputArea>
+        )}
+        <SubTitleArea>
+          <h4>소셜계정으로 {mode.text}하기</h4>
+        </SubTitleArea>
+        <SocialLoginArea>
+          <GoogleButtonArea
+            href={`${config.server.baseURL}/v1/auth/redirect?provider=google`}
+            data-index="google"
+          >
+            <GoogleIcon></GoogleIcon>
+          </GoogleButtonArea>
+        </SocialLoginArea>
+        <InfoArea>
+          <h5>{mode.info}</h5>
+          <ChangeModeText onClick={changeMode}>{mode.to}하기</ChangeModeText>
+        </InfoArea>
+      </Modal>
+    </ModalBlock>
   ) : null;
 };
 

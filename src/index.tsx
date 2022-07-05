@@ -7,11 +7,13 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 
-Sentry.init({
-  dsn: 'https://3fb4d138494547089aa2785d1e03c4b0@o453369.ingest.sentry.io/6546199',
-  integrations: [new BrowserTracing()],
-  tracesSampleRate: 1.0,
-});
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: 'https://3fb4d138494547089aa2785d1e03c4b0@o453369.ingest.sentry.io/6546199',
+    integrations: [new BrowserTracing()],
+    tracesSampleRate: 1.0,
+  });
+}
 
 const container = document.getElementById('root');
 const queryClient = new QueryClient({

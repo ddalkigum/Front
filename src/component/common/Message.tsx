@@ -9,7 +9,8 @@ const { useState } = React;
 const Block = styled.div`
   width: 100%;
   position: fixed;
-  bottom: 1rem; ;
+  bottom: 1rem;
+  z-index: 5;
 `;
 
 const fadeIn = keyframes`
@@ -49,7 +50,7 @@ const ShowingMessage = () => {
   useEffect(() => {
     if (showingCondition) {
       setOpen(true);
-      setTimeout(() => setOpen(false), 1500);
+      setTimeout(() => setOpen(false), 2000);
     }
   }, [open]);
 

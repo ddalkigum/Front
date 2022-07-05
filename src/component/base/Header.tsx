@@ -10,6 +10,7 @@ import RoundImage from '../common/RoundImage';
 import SettingBar from './SettingBar';
 import { handleAPI } from '../../lib/api/common';
 import { getUserProfileByToken } from '../../lib/api/user';
+import AuthModal from '../modal/AuthModal';
 
 const { useState, useEffect } = React;
 
@@ -124,6 +125,7 @@ const Header = ({ condition }: { condition?: string }) => {
         )}
       </Inner>
       <SettingBar isOpen={SettingBarIsOpen} user={user} />
+      <AuthModal />
     </Block>
   );
 };

@@ -15,12 +15,6 @@ import ParticipateParty from '../container/setting/ParticipateParty';
 
 const { useState } = React;
 
-const PartyArea = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-`;
-
 const subjectList = [
   { id: '0', name: '생성한 그룹', description: 'create' },
   { id: '1', name: '참여한 그룹', description: 'join' },

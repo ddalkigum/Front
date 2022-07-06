@@ -1,0 +1,23 @@
+:root {
+  --color-black-100: hsl(0, 0%, 0%);
+  --color-black-90: hsl(0, 0%, 10%);
+  --color-black-80: hsl(0, 0%, 20%);
+  --color-black-70: hsl(0, 0%, 30%);
+  --color-black-60: hsl(0, 0%, 40%);
+  --color-black-50: hsl(0, 0%, 50%);
+  --color-black-40: hsl(0, 0%, 60%);
+  --color-black-30: hsl(0, 0%, 70%);
+  --color-black-20: hsl(0, 0%, 80%);
+  --color-black-10: hsl(0, 0%, 90%);
+  --color-black-0: hsl(0, 0%, 100%);
+
+  --color-primary-50: hsl(203, 100%, 50%);
+  --color-primary-40: hsl(203, 100%, 40%);
+  --color-primary-30: hsl(203, 100%, 30%);
+  --color-primary-20: hsl(203, 100%, 20%);
+
+  --color-primary-relative-50: hsl(325, 50%, 50%);
+  --color-primary-relative-40: hsl(325, 50%, 40%);
+  --color-primary-relative-30: hsl(325, 50%, 30%);
+  --color-primary-relative-20: hsl(325, 50%, 20%);
+}

@@ -1,5 +1,10 @@
 import { atom } from 'recoil';
 
+export const isDarkMode = atom({
+  key: 'isDark',
+  default: false,
+});
+
 export const authModalHandler = atom({
   key: 'authModalisOpen',
   default: false,

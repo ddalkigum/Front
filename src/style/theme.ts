@@ -19,7 +19,7 @@ interface ITheme {
 
 export const theme: ITheme = {
   // Main color
-  azureRadiance: '#009AFE',
+  azureRadiance: 'var(--color-primary-50)',
   lochmara: '#0087DB',
   malibu: '#4EB8FE',
   white: '#fff',
@@ -41,6 +41,36 @@ export const theme: ITheme = {
   // Common Background
   homeBackground: '#F5F5F5',
   cardBackground: '#fff',
+};
+
+const newTheme = {
+  dark: {
+    mainBackground: 'var(--color-black-30)',
+    cardBackground: 'var(--color-black-10)',
+    text: 'var(--color-black-90)',
+    subText: 'var(--color-black-70)',
+    line: 'var(--color-black-20)',
+    deactivateButtonBackground: 'var(--color-black-40)',
+    hoverDeactivateButtonBackground: 'var(--color-black-60)',
+
+    primary50: 'var(--color-primary-50)',
+    primary40: 'var(--color-primary-40)',
+    primary30: 'var(--color-primary-30)',
+    primary20: 'var(--color-primary-20)',
+
+    primaryRelative50: 'var(--color-primary-relative-50)',
+    primaryRelative40: 'var(--color-primary-relative-40)',
+    primaryRelative30: 'var(--color-primary-relative-30)',
+    primaryRelative20: 'var(--color-primary-relative-20)',
+  },
+  light: {
+    mainBackground: 'var(--color-black-70)',
+    font: 'var(--color-black-10)',
+  },
+};
+
+export const getTheme = (isDark: 'dark' | 'light') => {
+  return newTheme[isDark];
 };
 
 interface IColorPalette {

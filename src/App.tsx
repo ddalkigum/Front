@@ -1,5 +1,6 @@
 import React from 'react';
 import GlobalStyle from './GlobalStyle';
+import './theme.css';
 import './font.css';
 import Router from './Router';
 import AuthModal from './component/modal/AuthModal';

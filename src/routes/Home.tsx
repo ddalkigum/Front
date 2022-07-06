@@ -6,7 +6,7 @@ import { mediaQuery } from '../lib/style/media';
 
 const Block = styled.div`
   width: 100%;
-  margin: 5rem auto;
+  margin: 2rem auto 4rem;
   ${mediaQuery(1919)} {
     width: 1376px;
   }

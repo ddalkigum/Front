@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { useSetRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
-import { BiSearch } from 'react-icons/bi';
 import PartyCard from '../../component/card/PartyCard';
 import SkeletonCard from '../../component/card/SkeletonCard';
 import { getPartyList } from '../../lib/api/party';
@@ -11,7 +10,6 @@ import { getScrollBottom } from '../../lib/util';
 import { theme } from '../../style/theme';
 import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
-import { BaseInput } from '../../component/base/Input';
 
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -24,21 +22,8 @@ const Inner = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0.2rem 0.5rem 0 0.5rem;
   padding-bottom: 1.5rem;
-`;
-
-const SearchArea = styled.div`
-  padding: 0 0 1.5rem 0;
-  display: flex;
-  align-items: center;
-`;
-
-const SearchInput = styled(BaseInput)`
-  width: 50%;
-  min-width: 15rem;
-  margin-left: 1rem;
-  padding-bottom: 0.2rem;
 `;
 
 const fadeBottom = keyframes`

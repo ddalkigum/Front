@@ -78,16 +78,26 @@ const CheckSignupArea = styled.div`
 
 const validateNickname = (nickname: string) => {
   if (nickname === '') {
-    return '닉네임을 입력해주세요.';
+    return '닉네임을 입력해주세요';
   }
 
   if (nickname.length > 10) {
-    return '닉네임은 10자까지 가능해요.';
+    return '닉네임은 10자까지 가능합니다';
+  }
+
+  const trimed = nickname.trim();
+  if (nickname !== trimed) {
+    return '공백은 포함할 수 없습니다';
+  }
+
+  const checkBlank = /[\s]/g;
+  if (checkBlank.test(nickname)) {
+    return '공백은 포함할 수 없습니다';
   }
 
   const regex = /^[a-zA-Z가-힣0-9-_]{3,20}$/;
   if (!regex.test(nickname)) {
-    return '닉네임은 3~10자 알파벳, 한글, 숫자, -, _ 로 만들어주세요.';
+    return '닉네임은 3~10자 알파벳, 한글, 숫자, -, _ 로 만들어주세요';
   }
 };
 

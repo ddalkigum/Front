@@ -53,3 +53,10 @@ export interface AvailableDay {
   dayID: string;
   partyID: string;
 }
+
+export interface Notify {
+  id: string;
+  type: string;
+  isActive: boolean;
+  userID: number;
+}

@@ -119,7 +119,7 @@ const ClickedPageNumber = styled.li`
 
 const EnabledList = styled.li`
   cursor: default;
-  color: ${theme.boldLine};
+  color: ${(props) => props.theme.line};
 `;
 
 const AbledList = styled.li`

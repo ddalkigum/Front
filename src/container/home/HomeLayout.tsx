@@ -43,12 +43,12 @@ const PaginationArea = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: ${theme.homeBackground};
+  background: ${(props) => props.theme.mainBackground};
   width: 100%;
   height: 5rem;
   bottom: 0;
   left: 0;
-  border-top: 1px solid ${theme.line};
+  border-top: 1px solid ${(props) => props.theme.line};
 
   animation: ${fadeBottom} 0.3s ease-in;
 `;

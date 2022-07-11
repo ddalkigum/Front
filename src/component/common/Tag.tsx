@@ -9,8 +9,8 @@ const TagBox = styled.div`
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
-  background-color: ${theme.azureRadiance};
-  color: ${theme.buttonText};
+  background-color: ${(props) => props.theme.primary50};
+  color: ${(props) => props.theme.primaryText};
 `;
 
 const Tag = ({ text }) => {

@@ -13,7 +13,22 @@ const Block = styled.div`
   height: auto;
   min-height: 100vh;
   padding-bottom: 5rem;
-  background-color: ${theme.homeBackground};
+  background-color: ${(props) => props.theme.mainBackground};
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  p,
+  blockquote,
+  pre,
+  a,
+  strong {
+    color: ${(props) => props.theme.text};
+  }
 `;
 
 const Footer = styled.div`

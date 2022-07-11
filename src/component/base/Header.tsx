@@ -5,7 +5,12 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import RoundButton from '../common/RoundButton';
 import { theme } from '../../style/theme';
-import { authModalHandler, messageHandler, userHandler } from '../../atom';
+import {
+  authModalHandler,
+  messageHandler,
+  themeModeHandler,
+  userHandler,
+} from '../../atom';
 import RoundImage from '../common/RoundImage';
 import SettingBar from './SettingBar';
 import { handleAPI } from '../../lib/api/common';
@@ -14,7 +19,7 @@ import AuthModal from '../modal/AuthModal';
 
 const { useState, useEffect } = React;
 
-const Block = styled.div`
+const Block = styled.header`
   height: 4rem;
   margin: auto;
 `;
@@ -27,9 +32,8 @@ const Inner = styled.div`
   justify-content: space-between;
 `;
 
-const Title = styled.div`
-  color: ${theme.text};
-  font-size: 2rem;
+const Title = styled.h1`
+  color: ${(props) => props.theme.text};
   cursor: pointer;
 `;
 
@@ -58,6 +62,7 @@ const Header = ({ condition }: { condition?: string }) => {
   const [isOpen, setOpen] = useRecoilState(authModalHandler);
   const [user, setUser] = useRecoilState(userHandler);
   const [SettingBarIsOpen, setSettingBarOpen] = useState(false);
+  const [isDark, setTheme] = useRecoilState(themeModeHandler);
   const setMessage = useSetRecoilState(messageHandler);
 
   if (!user) {
@@ -92,12 +97,18 @@ const Header = ({ condition }: { condition?: string }) => {
     navigation('/');
   };
 
+  const changeMode = () => {
+    const themeMode = isDark ? 'dark' : 'light';
+    localStorage.setItem('theme', themeMode);
+  };
+
   return (
     <Block>
       <Inner>
         <Title onClick={moveHomePage}>DeBook</Title>
         {condition === 'signup' ? null : (
           <InfoBox>
+            <button onClick={changeMode}>모드 변경</button>
             {user ? (
               <>
                 <RoundButton

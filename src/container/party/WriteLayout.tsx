@@ -59,7 +59,7 @@ const RecruitPlanArea = styled.div`
   }
 
   h5 {
-    color: ${theme.subText};
+    color: ${(props) => props.theme.subText};
   }
 
   button {
@@ -98,7 +98,7 @@ const RecruitPlanInput = styled(BaseInput)`
 `;
 
 const SideWarningMessage = styled.h5`
-  color: ${theme.persianPink};
+  color: ${(props) => props.theme.primaryRelative50};
   margin-left: 1rem;
 `;
 
@@ -112,7 +112,7 @@ const BookInfoArea = styled.div`
 const WarningMessageArea = styled.div`
   text-align: center;
   padding-top: 2rem;
-  color: ${theme.persianPink};
+  color: ${(props) => props.theme.primaryRelative50};
 `;
 
 const SubmitButtonArea = styled.div`

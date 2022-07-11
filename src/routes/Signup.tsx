@@ -51,12 +51,12 @@ const NicknameInputArea = styled.div`
     width: 60%;
     outline: none;
     padding: 0.5rem 0;
-    background-color: ${theme.homeBackground};
-    border-bottom: 2px solid ${theme.boldLine};
+    background-color: ${(props) => props.theme.mainBackground};
+    border-bottom: 2px solid ${(props) => props.theme.subText};
     font-size: 1rem;
 
     :focus {
-      border-bottom: 2px solid ${theme.azureRadiance};
+      border-bottom: 2px solid ${(props) => props.theme.primary50};
     }
   }
 `;
@@ -72,7 +72,7 @@ const CheckSignupArea = styled.div`
   }
 
   span {
-    color: ${theme.persianPink};
+    color: ${(props) => props.theme.primaryRelative50};
   }
 `;
 

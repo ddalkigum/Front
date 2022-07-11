@@ -28,11 +28,22 @@ const Modal = styled.div`
   width: 606px;
   height: 480px;
   margin: auto;
-  background: white;
+  background: ${(props) => props.theme.mainBackground};
   z-index: 3;
   display: flex;
   flex-direction: column;
   padding: 0 2rem;
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  input {
+    background: inherit;
+    color: ${(props) => props.theme.text};
+  }
 `;
 
 const CloseArea = styled.div`
@@ -78,23 +89,23 @@ const InfoArea = styled.div`
 
 const ChangeModeText = styled.h3`
   display: inline;
-  color: ${theme.azureRadiance};
+  color: ${(props) => props.theme.primary50};
   cursor: pointer;
 
   :hover {
-    color: ${theme.lochmara};
+    color: ${(props) => props.theme.primary40};
   }
 `;
 
 const SuccessSendMail = styled.div`
-  background-color: ${theme.azureRadiance};
+  background-color: ${(props) => props.theme.primary50};
   padding: 1rem;
-  color: white;
+  color: ${(props) => props.theme.primaryText};
 `;
 
 const ErrorMessage = styled.span`
   font-size: 0.875rem;
-  color: ${theme.persianPink};
+  color: ${(props) => props.theme.primaryRelative50};
   margin-top: 0.5rem;
 `;
 

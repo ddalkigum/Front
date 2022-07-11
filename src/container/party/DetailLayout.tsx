@@ -85,11 +85,11 @@ const OwnerOptionArea = styled.div`
   display: flex;
   width: fit-content;
   h4 {
-    color: gray;
+    color: ${(props) => props.theme.subText};
     margin-left: 1.5rem;
 
     :hover {
-      color: darkgray;
+      color: ${(props) => props.theme.subTextHover};
     }
   }
 `;
@@ -101,8 +101,8 @@ const ConditionArea = styled.div`
   flex-direction: column;
   margin-top: 2rem;
   padding: 2rem 1rem;
-  border-bottom: 0.5rem solid ${theme.line};
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-bottom: 0.5rem solid ${(props) => props.theme.line};
+  box-shadow: ${(props) => props.theme.line} 0px 8px 24px;
 `;
 
 const BookInfoArea = styled.div`

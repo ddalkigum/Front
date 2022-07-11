@@ -32,7 +32,10 @@ const fadeIn = keyframes`
 const MessageArea = styled.div<{ isOpen; status }>`
   background: ${(props) =>
     props.status === 'success' ? theme.azureRadiance : theme.persianPink};
-  color: ${(props) => (props.status === 'success' ? theme.white : theme.black)};
+  color: ${(props) =>
+    props.status === 'success'
+      ? props.theme.primaryText
+      : props.theme.primaryRelativeText};
   text-align: center;
   line-height: 2;
   white-space: pre-line;

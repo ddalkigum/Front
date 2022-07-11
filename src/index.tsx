@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Helmet from 'react-helmet';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -28,9 +29,13 @@ if (container) {
   const root = ReactDOM.createRoot(container);
   root.render(
     <RecoilRoot>
+      <Helmet>
+        <title>Debook</title>
+        <meta name="description" content="책을 통해 사람들을 찾으세요" />
+      </Helmet>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <App />
+        <App data-theme="dark" />
       </QueryClientProvider>
     </RecoilRoot>
   );

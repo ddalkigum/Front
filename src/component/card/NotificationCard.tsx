@@ -12,7 +12,7 @@ const Card = styled.div`
 
   a {
     :hover {
-      color: ${theme.azureRadiance};
+      color: ${(props) => props.theme.primary50};
     }
   }
 `;

@@ -5,7 +5,7 @@ import { theme } from '../../style/theme';
 const LineArea = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${theme.line};
+  background-color: ${(props) => props.theme.line};
 `;
 
 const Line = () => {

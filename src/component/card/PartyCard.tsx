@@ -10,11 +10,10 @@ import { MainCard } from '../../container/home/HomeLayout';
 import { convertDateToString } from '../../lib/date';
 import { mediaQuery } from '../../lib/style/media';
 
-const Block = styled.div`
+const Block = styled.article`
   width: calc(24% - 1rem);
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  cursor: pointer;
-
+  background: ${(props) => props.theme.cardBackground};
   ${mediaQuery(1920)} {
     width: calc(32% - 1rem);
   }
@@ -76,7 +75,7 @@ const AddressArea = styled.div`
 `;
 
 const Date = styled.h5`
-  color: ${theme.subText};
+  color: ${(props) => props.theme.subText};
 `;
 
 const UserInfoArea = styled.div`
@@ -87,7 +86,7 @@ const UserInfoArea = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-const AdminInfoArea = styled.div`
+const AdminInfoArea = styled.a`
   display: flex;
   align-items: center;
 `;
@@ -105,18 +104,20 @@ const PartyCard = ({ party }: { party: MainCard }) => {
   };
 
   return (
-    <Block onClick={moveDetailPage}>
+    <Block>
       <InfoArea>
-        <TitleArea>
-          <h3>{party.partyTitle}</h3>
-        </TitleArea>
-        <BookArea>
-          <BookImage src={party.bookThumbnail}></BookImage>
-          <BookInfoArea>
-            <BookTitle>{party.bookTitle}</BookTitle>
-            <BookWriter>{party.authors}</BookWriter>
-          </BookInfoArea>
-        </BookArea>
+        <a href={`/@${party.nickname}/${party.slug}`}>
+          <TitleArea>
+            <h3>{party.partyTitle}</h3>
+          </TitleArea>
+          <BookArea>
+            <BookImage src={party.bookThumbnail}></BookImage>
+            <BookInfoArea>
+              <BookTitle>{party.bookTitle}</BookTitle>
+              <BookWriter>{party.authors}</BookWriter>
+            </BookInfoArea>
+          </BookArea>
+        </a>
         <AddressArea>
           {party.isOnline ? (
             <h5>&nbsp;</h5>
@@ -130,21 +131,19 @@ const PartyCard = ({ party }: { party: MainCard }) => {
         </SubInfoArea>
       </InfoArea>
       <Line />
-      {party.profileImage ? (
-        <UserInfoArea>
-          <AdminInfoArea>
-            <RoundUserImage
-              size={'SMALL'}
-              src={party.profileImage}
-            ></RoundUserImage>
-            <AdminNickname>{party.nickname}</AdminNickname>
-          </AdminInfoArea>
-          <ParticipantInfo
-            max={party.numberOfRecruit}
-            current={party.numberOfParticipant}
-          ></ParticipantInfo>
-        </UserInfoArea>
-      ) : null}
+      <UserInfoArea>
+        <AdminInfoArea href={`/profile/@${party.nickname}`}>
+          <RoundUserImage
+            size={'SMALL'}
+            src={party.profileImage}
+          ></RoundUserImage>
+          <AdminNickname>{party.nickname}</AdminNickname>
+        </AdminInfoArea>
+        <ParticipantInfo
+          max={party.numberOfRecruit}
+          current={party.numberOfParticipant}
+        ></ParticipantInfo>
+      </UserInfoArea>
     </Block>
   );
 };

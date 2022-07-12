@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../style/theme';
 
 const LineArea = styled.div`
   width: 100%;

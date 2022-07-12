@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../style/theme';
 
 const TagBox = styled.div`
   height: 1.5rem;
@@ -10,7 +9,10 @@ const TagBox = styled.div`
   display: flex;
   align-items: center;
   background-color: ${(props) => props.theme.primary50};
-  color: ${(props) => props.theme.primaryText};
+
+  h5 {
+    color: ${(props) => props.theme.primaryText};
+  }
 `;
 
 const Tag = ({ text }) => {

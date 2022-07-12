@@ -6,6 +6,18 @@ const Block = styled.div`
   width: 1024px;
   margin: auto;
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  input,
+  span,
+  a {
+    color: ${(props) => props.theme.text};
+  }
+
   ${mediaQuery(1056)} {
     width: calc(100% - 2rem);
   }

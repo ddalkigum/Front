@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { theme } from '../../style/theme';
 import RoundButton from '../common/RoundButton';
 
-const { useState } = React;
-
 const ModalBlock = styled.div`
   position: fixed;
   top: 0;
@@ -21,7 +19,7 @@ const ModalBlock = styled.div`
 const Block = styled.div`
   width: 400px;
   height: 180px;
-  background: ${theme.homeBackground};
+  background: ${(props) => props.theme.mainBackground};
 `;
 
 const Inner = styled.div`

@@ -23,7 +23,7 @@ const Modal = styled.div`
   width: 606px;
   height: 480px;
   margin: auto;
-  background: white;
+  background: ${(props) => props.theme.mainBackground};
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -95,12 +95,7 @@ const AddressModal = ({
     <ModalBlock>
       <Modal>
         <CloseIconArea>
-          <CloseIcon
-            color={theme.boldLine}
-            width="1rem"
-            height="1rem"
-            onClick={closeModal}
-          />
+          <CloseIcon width="1rem" height="1rem" onClick={closeModal} />
         </CloseIconArea>
         <TitleArea>
           <h3>위치를 선택해주세요</h3>

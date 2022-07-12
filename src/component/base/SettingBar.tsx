@@ -1,30 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled, { css, keyframes } from 'styled-components';
 import { userHandler } from '../../atom';
 import { logoutResponse } from '../../lib/api/auth';
-import { theme } from '../../style/theme';
+import { media, mediaQuery } from '../../lib/style/media';
 
-type CategoryIndex = 'logout' | 'profile' | 'setting' | 'notification';
-
-const categoryList: {
-  id: string;
-  name: string;
-  'data-index': CategoryIndex;
-}[] = [
-  { id: '0', name: '알림', 'data-index': 'notification' },
-  { id: '1', name: '프로필 보기', 'data-index': 'profile' },
-  { id: '2', name: '프로필 설정', 'data-index': 'setting' },
-  { id: '3', name: '로그아웃', 'data-index': 'logout' },
-];
+const { useState } = React;
 
 const open = keyframes`
   0% {
-    transform: translateY(-50%) scale(0.1)
+    transform: translateY(0) scale(0.1)
   }
   100% {
-    transform: translateY(0) translateY(0) scale(1)
+    transform: translateY(65%) translateY(0) scale(1)
   }
 `;
 
@@ -34,11 +23,13 @@ const Block = styled.div<{ isOpen }>`
   z-index: 1;
   width: 12rem;
   right: 1.125rem;
-  background: ${theme.homeBackground};
+  background: ${(props) => props.theme.cardBackground};
+  transform: translateY(65%);
+
   ${(props) =>
     props.isOpen
       ? css`
-          border: 1px solid ${theme.boldLine};
+          border: 1px solid ${({ theme }) => theme.line};
           animation: ${open} 0.2s ease-in-out;
         `
       : css`
@@ -46,19 +37,27 @@ const Block = styled.div<{ isOpen }>`
         `};
 `;
 
-const CategoryArea = styled.li`
+const CategoryArea = styled.a`
+  display: block;
   font-size: 0.875rem;
   padding: 1.125rem 0 1.125rem 1rem;
-  cursor: pointer;
+  color: ${(props) => props.theme.text};
 
   :hover {
-    background: ${theme.line};
+    background: ${(props) => props.theme.line};
+  }
+
+  &.mobile {
+    display: none;
+    ${media.small} {
+      display: block;
+    }
   }
 `;
 
 const SettingBar = ({ isOpen, user }) => {
   const setUser = useSetRecoilState(userHandler);
-  const navigation = useNavigate();
+  const [size, setSize] = useState(window.innerWidth);
 
   const clearUserHistory = () => {
     localStorage.removeItem('currentUser');
@@ -71,59 +70,46 @@ const SettingBar = ({ isOpen, user }) => {
     window.location.reload();
   };
 
-  const moveProfilePage = () => {
-    navigation(`/profile/@${user.nickname}`);
-  };
+  const categoryList = [
+    {
+      id: '0',
+      name: '알림',
+      'data-index': 'notification',
+      href: '/notification',
+    },
 
-  const moveSettingPage = () => {
-    navigation(`/setting`);
-  };
-
-  const moveRequestPage = () => {
-    navigation(`/notification`);
-  };
-
-  const handleClickCategory = async (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>
-  ) => {
-    const dataIndex = event.currentTarget.getAttribute(
-      'data-index'
-    ) as CategoryIndex;
-
-    switch (dataIndex) {
-      case 'notification':
-        moveRequestPage();
-        break;
-      case 'logout':
-        logout();
-        break;
-      case 'profile':
-        moveProfilePage();
-        break;
-      case 'setting':
-        moveSettingPage();
-        break;
-      default:
-        moveProfilePage();
-        break;
-    }
-  };
+    {
+      id: '1',
+      name: '프로필 보기',
+      'data-index': 'profile',
+      href: `/profile/@${user.nickname}`,
+    },
+    { id: '2', name: '프로필 설정', 'data-index': 'setting', href: '/setting' },
+  ];
 
   return (
     <Block isOpen={isOpen}>
       {isOpen ? (
         <ul>
+          <li id="write">
+            <CategoryArea className="mobile" href="/write">
+              모집하기
+            </CategoryArea>
+          </li>
           {categoryList.map((category) => {
             return (
-              <CategoryArea
-                onClick={handleClickCategory}
-                data-index={category['data-index']}
-                key={category.id}
-              >
-                {category.name}
-              </CategoryArea>
+              <li data-index={category['data-index']} key={category.id}>
+                <CategoryArea href={category.href}>
+                  {category.name}
+                </CategoryArea>
+              </li>
             );
           })}
+          <li id="logout">
+            <CategoryArea style={{ cursor: 'pointer' }} onClick={logout}>
+              로그아웃
+            </CategoryArea>
+          </li>
         </ul>
       ) : null}
     </Block>

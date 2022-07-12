@@ -16,7 +16,6 @@ import {
   registNotification,
   requestParticipateResponse,
 } from '../../lib/api/party';
-import { theme } from '../../style/theme';
 import { AvailableDay, Book, Party, User } from '../../types/entity';
 import { mediaQuery } from '../../lib/style/media';
 import { authModalHandler, userHandler, messageHandler } from '../../atom';
@@ -24,16 +23,6 @@ import { handleAPI } from '../../lib/api/common';
 import CustomModal from '../../component/modal/CustomModal';
 
 const { useState, useEffect, Fragment, createElement } = React;
-
-const Block = styled.div`
-  height: 100%;
-  width: 776px;
-  margin: auto;
-
-  ${mediaQuery(776)} {
-    width: 100%;
-  }
-`;
 
 const Inner = styled.div`
   display: flex;
@@ -46,11 +35,6 @@ const Inner = styled.div`
 
 const Title = styled.div`
   margin-top: 3rem;
-`;
-
-const SubTitle = styled.div`
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 `;
 
 const DetailConditionArea = styled.div`
@@ -101,8 +85,7 @@ const ConditionArea = styled.div`
   flex-direction: column;
   margin-top: 2rem;
   padding: 2rem 1rem;
-  border-bottom: 0.5rem solid ${(props) => props.theme.line};
-  box-shadow: ${(props) => props.theme.line} 0px 8px 24px;
+  background: ${(props) => props.theme.cardBackground};
 `;
 
 const BookInfoArea = styled.div`

@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
-import { theme } from '../../style/theme';
 import Line from '../common/Line';
 import ParticipantInfo from '../common/ParticipantInfo';
 import Tag from '../common/Tag';
@@ -74,8 +72,9 @@ const AddressArea = styled.div`
   padding-top: 1rem;
 `;
 
-const Date = styled.h5`
+const Date = styled.div`
   color: ${(props) => props.theme.subText};
+  font-size: 0.75rem;
 `;
 
 const UserInfoArea = styled.div`
@@ -96,13 +95,6 @@ const AdminNickname = styled.h5`
 `;
 
 const PartyCard = ({ party }: { party: MainCard }) => {
-  const navigation = useNavigate();
-  const moveDetailPage = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    navigation(`/@${party.nickname}/${party.slug}`);
-  };
-
   return (
     <Block>
       <InfoArea>

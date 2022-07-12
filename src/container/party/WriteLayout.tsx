@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import styled from 'styled-components';
-import { BiSearch } from 'react-icons/bi';
 import { useLocation, useNavigate } from 'react-router';
 import { useRecoilState } from 'recoil';
 import ContentTemplate from '../../component/base/ContentTemplate';
@@ -18,8 +17,9 @@ import {
 } from '../../lib/api/party';
 import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
+import ApplyThemeSearch from '../../component/icon/Search';
 
-const { useRef, useState, useReducer, createElement, Fragment } = React;
+const { useRef, useState, useReducer } = React;
 
 const TitleArea = styled.div`
   width: 100%;
@@ -265,7 +265,7 @@ const WriteLayout = ({ user }: { user: User }) => {
     const trimTitle = title.trim();
 
     if (trimTitle.length > 20) {
-      return setWarningMessage('제목은 20자까지 입력가능합니다');
+      return setWarningMessage('제목은 20자까지 입력가능해요');
     }
 
     if (!numberOfRecruit) {
@@ -274,6 +274,10 @@ const WriteLayout = ({ user }: { user: User }) => {
 
     if (!numberOfRecruit) {
       return setWarningMessage('그룹인원을 숫자로 입력해주세요');
+    }
+
+    if (numberOfRecruit < 2) {
+      return setWarningMessage('2명이상 가능해요');
     }
 
     if (!openChatURL) {
@@ -319,7 +323,7 @@ const WriteLayout = ({ user }: { user: User }) => {
     }
 
     try {
-      const response = await registPartyResponse({
+      await registPartyResponse({
         party,
         availableDay: availableDayList,
         book,
@@ -400,11 +404,7 @@ const WriteLayout = ({ user }: { user: User }) => {
             {address ? (
               <>
                 <h4>{address}</h4>
-                <BiSearch
-                  size="1rem"
-                  style={{ cursor: 'pointer' }}
-                  onClick={openAddressModal}
-                />
+                <ApplyThemeSearch size="1.5rem" onClick={openAddressModal} />
               </>
             ) : (
               <BaseInput
@@ -417,7 +417,7 @@ const WriteLayout = ({ user }: { user: User }) => {
         )}
         <div>
           <h4>도서 검색</h4>
-          <BiSearch size="1.5rem" onClick={openBookModal} cursor="pointer" />
+          <ApplyThemeSearch size="1.5rem" onClick={openBookModal} />
         </div>
         <div style={{ alignItems: 'flex-start' }}>
           {book ? (

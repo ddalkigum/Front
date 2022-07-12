@@ -1,9 +1,10 @@
 import React from 'react';
-import { BiChevronLeft, BiChevronRight, BiSearch } from 'react-icons/bi';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import styled from 'styled-components';
 import { theme } from '../../style/theme';
 import CloseIcon from '../icon/Close';
 import { getBookList, BookList } from '../../lib/api/party';
+import ApplyThemeSearch from '../icon/Search';
 
 const { useState, createRef } = React;
 const LIMIT_PAGE = 50;
@@ -35,7 +36,7 @@ const Modal = styled.div`
   width: 540px;
   height: 500px;
   margin: auto;
-  background: white;
+  background: ${(props) => props.theme.mainBackground};
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -75,7 +76,7 @@ const ResultArea = styled.ul`
   overflow: scroll;
   margin-top: 1rem;
   height: 65%;
-  border: 1px solid ${theme.line};
+  border: 1px solid ${(props) => props.theme.line};
 `;
 
 const ItemArea = styled.li`
@@ -114,6 +115,7 @@ const PaginationArea = styled.div`
 const ClickedPageNumber = styled.li`
   font-family: GmarketBold;
   font-size: 1.125rem;
+  color: ${(props) => props.theme.text};
   cursor: default;
 `;
 
@@ -124,6 +126,7 @@ const EnabledList = styled.li`
 
 const AbledList = styled.li`
   cursor: pointer;
+  color: ${(props) => props.theme.subText};
 `;
 
 const ResultMessageArea = styled.div`
@@ -144,8 +147,8 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
   const [pageList, setPageList] = useState<number[]>([]);
 
   const closeModal = () => {
-    document.body.style.overflowY = null;
     setOpen(!isOpen);
+    document.body.style.overflowY = null;
   };
 
   const getSelectedBook = (
@@ -233,7 +236,6 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
       <Modal>
         <CloseArea>
           <CloseIcon
-            color="gray"
             onClick={closeModal}
             width="1rem"
             height="1rem"
@@ -241,7 +243,7 @@ const BookSearchModal = ({ isOpen, setOpen, setBook }) => {
         </CloseArea>
         <SearchArea>
           <SearchInput placeholder="도서를 입력해주세요" ref={bookRef} />
-          <BiSearch size="1.5rem" cursor="pointer" onClick={searchBook} />
+          <ApplyThemeSearch size="1.5rem" onClick={searchBook} />
         </SearchArea>
         <ResultArea>
           {currentBookList && currentBookList.length ? (

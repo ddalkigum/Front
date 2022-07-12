@@ -3,9 +3,8 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { authModalHandler, messageHandler } from '../../atom';
 import { config } from '../../config';
-import { sendEmailResponse, googleSigninResponse } from '../../lib/api/auth';
+import { sendEmailResponse } from '../../lib/api/auth';
 import { handleAPI } from '../../lib/api/common';
-import useSetMessage from '../../lib/hooks/useSetMessage';
 import { theme } from '../../style/theme';
 import RoundButton from '../common/RoundButton';
 import CloseIcon from '../icon/Close';
@@ -87,7 +86,7 @@ const InfoArea = styled.div`
   line-height: 2rem;
 `;
 
-const ChangeModeText = styled.h3`
+const ChangeModeText = styled.div`
   display: inline;
   color: ${(props) => props.theme.primary50};
   cursor: pointer;
@@ -179,7 +178,6 @@ const AuthModal: React.FC<{}> = () => {
         <CloseArea>
           <CloseIcon
             onClick={closeModal}
-            color={theme.subText}
             width="1rem"
             height="1rem"
           ></CloseIcon>

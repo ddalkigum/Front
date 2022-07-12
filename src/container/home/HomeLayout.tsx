@@ -2,14 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { useSetRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
-import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import PartyCard from '../../component/card/PartyCard';
 import SkeletonCard from '../../component/card/SkeletonCard';
 import { getPartyList } from '../../lib/api/party';
 import { getScrollBottom } from '../../lib/util';
-import { theme } from '../../style/theme';
 import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
+import LeftArrow from '../../component/icon/LeftArrow';
+import RightArrow from '../../component/icon/RightArrow';
 
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -86,7 +86,6 @@ const HomeLayout = () => {
   const [showPagination, setShowPagination] = useState(true);
   const innerRef = useRef<HTMLDivElement>();
   const setMessage = useSetRecoilState(messageHandler);
-  const navigation = useNavigate();
 
   const onScroll = useCallback(() => {
     const scrollBottom = getScrollBottom();
@@ -137,9 +136,6 @@ const HomeLayout = () => {
     window.scrollTo(0, 0);
   };
 
-  const submitWord = (event) => {
-    event.preventDefault();
-  };
   return (
     <Block>
       <Inner ref={innerRef}>
@@ -153,32 +149,18 @@ const HomeLayout = () => {
       </Inner>
       {showPagination ? (
         <PaginationArea>
-          {page === 1 ? (
-            <BsChevronLeft
-              cursor="default"
-              size="1.5rem"
-              color={theme.boldLine}
-            />
-          ) : (
-            <BsChevronLeft
-              cursor="pointer"
-              size="1.5rem"
-              onClick={loadPrevPage}
-            />
-          )}
-          {isLastPage ? (
-            <BsChevronRight
-              cursor="default"
-              color={theme.boldLine}
-              size="1.5rem"
-            />
-          ) : (
-            <BsChevronRight
-              cursor="pointer"
-              size="1.5rem"
-              onClick={loadNextPage}
-            />
-          )}
+          <LeftArrow
+            className={page === 1 ? 'deactive' : null}
+            cursor={page === 1 ? 'default' : 'pointer'}
+            onClick={page === 1 ? null : loadPrevPage}
+            size="1.5rem"
+          />
+          <RightArrow
+            className={isLastPage ? 'deactive' : null}
+            cursor={isLastPage ? 'default' : 'pointer'}
+            size="1.5rem"
+            onClick={isLastPage ? null : loadNextPage}
+          />
         </PaginationArea>
       ) : null}
     </Block>

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { messageHandler } from '../../atom';
-import { theme } from '../../style/theme';
 
 const { useState } = React;
 
@@ -31,7 +30,9 @@ const fadeIn = keyframes`
 
 const MessageArea = styled.div<{ isOpen; status }>`
   background: ${(props) =>
-    props.status === 'success' ? theme.azureRadiance : theme.persianPink};
+    props.status === 'success'
+      ? props.theme.primary50
+      : props.theme.primaryRelatve70};
   color: ${(props) =>
     props.status === 'success'
       ? props.theme.primaryText

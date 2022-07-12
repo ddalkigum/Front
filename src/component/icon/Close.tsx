@@ -10,16 +10,17 @@ const Icon = styled.svg.attrs({
 
 const SvgIcon = styled(Icon)`
   cursor: pointer;
+
+  path {
+    fill: ${(props) => props.theme.text};
+  }
 `;
 
-const CloseIcon = ({ color, onClick, width, height }) => {
+const CloseIcon = ({ onClick, width, height }) => {
   return (
     <SvgIcon onClick={onClick} width={width} height={height}>
       <g>
-        <path
-          d="M897.7,979.8L491.6,598.8l-392.4,381L10,892l403.8-392L10,108l89.2-87.8l392.5,381l406.1-381L990,108L572.2,500L990,892L897.7,979.8z"
-          fill={color}
-        />
+        <path d="M897.7,979.8L491.6,598.8l-392.4,381L10,892l403.8-392L10,108l89.2-87.8l392.5,381l406.1-381L990,108L572.2,500L990,892L897.7,979.8z" />
       </g>
     </SvgIcon>
   );

@@ -11,7 +11,6 @@ const Icon = styled.svg.attrs({
 const SvgIcon = styled(Icon)`
   width: 1rem;
   height: 1rem;
-  color: black;
 `;
 
 const UserIcon = ({ color }) => {

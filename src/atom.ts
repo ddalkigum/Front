@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export const themeModeHandler = atom({
   key: 'isDark',
-  default: false,
+  default: true,
 });
 
 export const authModalHandler = atom({

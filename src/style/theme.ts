@@ -62,42 +62,20 @@ export interface ThemePalette {
   primary20: string;
 
   primaryRelativeText: string;
+  primaryRelative70: string;
+  primaryRelative60: string;
   primaryRelative50: string;
   primaryRelative40: string;
-  primaryRelative30: string;
-  primaryRelative20: string;
 }
 
 const newTheme: { light: ThemePalette; dark: ThemePalette } = {
   light: {
-    mainBackground: 'var(--color-black-5)',
+    mainBackground: 'var(--color-black-10)',
     cardBackground: 'var(--color-black-5)',
     text: 'var(--color-black-90)',
     subText: 'var(--color-black-60)',
     subTextHover: 'var(--color-black-40)',
     line: 'var(--color-black-20)',
-    deactivateButtonBackground: 'var(--color-black-40)',
-    hoverDeactivateButtonBackground: 'var(--color-black-60)',
-
-    primaryText: 'var(--color-black-0)',
-    primary50: 'var(--color-primary-50)',
-    primary40: 'var(--color-primary-40)',
-    primary30: 'var(--color-primary-30)',
-    primary20: 'var(--color-primary-20)',
-
-    primaryRelativeText: 'var(--color-black-90)',
-    primaryRelative50: 'var(--color-primary-relative-50)',
-    primaryRelative40: 'var(--color-primary-relative-40)',
-    primaryRelative30: 'var(--color-primary-relative-30)',
-    primaryRelative20: 'var(--color-primary-relative-20)',
-  },
-  dark: {
-    mainBackground: 'var(--color-black-90)',
-    cardBackground: 'var(--color-black-80)',
-    text: 'var(--color-black-10)',
-    subText: 'var(--color-black-60)',
-    subTextHover: 'var(--color-black-40)',
-    line: 'var(--color-black-90)',
     deactivateButtonBackground: 'var(--color-black-50)',
     hoverDeactivateButtonBackground: 'var(--color-black-40)',
 
@@ -108,44 +86,36 @@ const newTheme: { light: ThemePalette; dark: ThemePalette } = {
     primary20: 'var(--color-primary-20)',
 
     primaryRelativeText: 'var(--color-black-90)',
+    primaryRelative70: 'var(--color-primary-relative-70)',
+    primaryRelative60: 'var(--color-primary-relative-60)',
     primaryRelative50: 'var(--color-primary-relative-50)',
     primaryRelative40: 'var(--color-primary-relative-40)',
-    primaryRelative30: 'var(--color-primary-relative-30)',
-    primaryRelative20: 'var(--color-primary-relative-20)',
+  },
+  dark: {
+    mainBackground: 'var(--color-black-90)',
+    cardBackground: 'var(--color-black-85)',
+    text: 'var(--color-black-10)',
+    subText: 'var(--color-black-60)',
+    subTextHover: 'var(--color-black-40)',
+    line: 'var(--color-black-80)',
+    deactivateButtonBackground: 'var(--color-black-40)',
+    hoverDeactivateButtonBackground: 'var(--color-black-50)',
+
+    primaryText: 'var(--color-black-0)',
+    primary50: 'var(--color-primary-50)',
+    primary40: 'var(--color-primary-40)',
+    primary30: 'var(--color-primary-30)',
+    primary20: 'var(--color-primary-20)',
+
+    primaryRelativeText: 'var(--color-black-90)',
+    primaryRelative70: 'var(--color-primary-relative-70)',
+    primaryRelative60: 'var(--color-primary-relative-60)',
+    primaryRelative50: 'var(--color-primary-relative-50)',
+    primaryRelative40: 'var(--color-primary-relative-40)',
   },
 };
 
 export const currentTheme = {
   light: newTheme.light,
   dark: newTheme.dark,
-};
-
-interface IColorPalette {
-  background: string;
-  color: string;
-  hoverBackground: string;
-}
-
-type IColor = {
-  [color: string]: IColorPalette;
-};
-
-export const buttonColor: IColor = {
-  blue: {
-    background: theme.azureRadiance,
-    color: theme.buttonText,
-    hoverBackground: theme.lochmara,
-  },
-
-  pink: {
-    background: theme.persianPink,
-    color: theme.buttonText,
-    hoverBackground: theme.deepBlush,
-  },
-
-  gray: {
-    background: theme.boldLine,
-    color: theme.buttonText,
-    hoverBackground: theme.hoverGray,
-  },
 };

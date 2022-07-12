@@ -1,23 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { BsFillCaretDownFill } from 'react-icons/bs';
 import RoundButton from '../common/RoundButton';
 import { theme } from '../../style/theme';
-import {
-  authModalHandler,
-  messageHandler,
-  themeModeHandler,
-  userHandler,
-} from '../../atom';
+import { authModalHandler, userHandler } from '../../atom';
 import RoundImage from '../common/RoundImage';
 import SettingBar from './SettingBar';
 import { handleAPI } from '../../lib/api/common';
 import { getUserProfileByToken } from '../../lib/api/user';
 import AuthModal from '../modal/AuthModal';
+import ToggleThemeButton from '../common/ToggleThemeButton';
 
-const { useState, useEffect } = React;
+const { useState } = React;
 
 const Block = styled.header`
   height: 4rem;
@@ -62,8 +58,6 @@ const Header = ({ condition }: { condition?: string }) => {
   const [isOpen, setOpen] = useRecoilState(authModalHandler);
   const [user, setUser] = useRecoilState(userHandler);
   const [SettingBarIsOpen, setSettingBarOpen] = useState(false);
-  const [isDark, setTheme] = useRecoilState(themeModeHandler);
-  const setMessage = useSetRecoilState(messageHandler);
 
   if (!user) {
     handleAPI(getUserProfileByToken()).then((response) => {
@@ -97,21 +91,17 @@ const Header = ({ condition }: { condition?: string }) => {
     navigation('/');
   };
 
-  const changeMode = () => {
-    const themeMode = isDark ? 'dark' : 'light';
-    localStorage.setItem('theme', themeMode);
-  };
-
   return (
     <Block>
       <Inner>
         <Title onClick={moveHomePage}>DeBook</Title>
         {condition === 'signup' ? null : (
           <InfoBox>
-            <button onClick={changeMode}>모드 변경</button>
+            <ToggleThemeButton />
             {user ? (
               <>
                 <RoundButton
+                  className="mobile"
                   color="blue"
                   size="DEFAULT"
                   text="모집하기"
@@ -123,6 +113,7 @@ const Header = ({ condition }: { condition?: string }) => {
                   <h5>{user.nickname}</h5>
                   <BsFillCaretDownFill color={theme.hoverGray} />
                 </ProfileBox>
+                <SettingBar isOpen={SettingBarIsOpen} user={user} />
               </>
             ) : (
               <RoundButton
@@ -135,7 +126,6 @@ const Header = ({ condition }: { condition?: string }) => {
           </InfoBox>
         )}
       </Inner>
-      <SettingBar isOpen={SettingBarIsOpen} user={user} />
       <AuthModal />
     </Block>
   );

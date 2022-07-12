@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { buttonColor } from '../../style/theme';
+import { media } from '../../lib/style/media';
 
 type ButtonSize = 'SMALL' | 'DEFAULT' | 'LARGE';
 export type Color = 'blue' | 'pink' | 'gray';
@@ -9,6 +9,7 @@ interface RoundButtonBlockProps {
   color: Color;
   size: ButtonSize;
   cursor?: string;
+  className?: string;
 }
 
 const RoundButtonBlock = styled.button<RoundButtonBlockProps>`
@@ -42,12 +43,27 @@ const RoundButtonBlock = styled.button<RoundButtonBlockProps>`
   border: none;
   outline: none;
   word-break: keep-all;
-  background: ${(props) => buttonColor[props.color].background};
-  color: ${(props) => buttonColor[props.color].color};
+  background: ${(props) => {
+    if (props.color === 'blue') return props.theme.primary50;
+    if (props.color === 'pink') return props.theme.primaryRelative60;
+    return props.theme.deactivateButtonBackground;
+  }};
+  color: ${(props) => props.theme.primaryText};
+
   :hover {
-    background: ${(props) => buttonColor[props.color].hoverBackground};
-    color: ${buttonColor.blue.color};
+    background: ${(props) => {
+      if (props.color === 'blue') return props.theme.primary40;
+      if (props.color === 'pink') return props.theme.primaryRelative70;
+      return props.theme.hoverDeactivateButtonBackground;
+    }};
+    color: ${(props) => props.theme.primaryText};
     cursor: ${(props) => props.cursor ?? 'pointer'};
+  }
+
+  &.mobile {
+    ${media.small} {
+      display: none;
+    }
   }
 `;
 
@@ -69,9 +85,11 @@ const RoundButton: React.FC<RoundButtonProps> = ({
   text,
   onClick,
   cursor,
+  className,
 }: RoundButtonProps) => {
   return (
     <RoundButtonBlock
+      className={className}
       color={color}
       size={size}
       onClick={onClick}

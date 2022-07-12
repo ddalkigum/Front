@@ -116,4 +116,4 @@ const SettingBar = ({ isOpen, user }) => {
   );
 };
 
-export default SettingBar;
+export default React.memo(SettingBar);

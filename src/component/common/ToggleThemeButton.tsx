@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { animated, useSpring } from 'react-spring';
 import { themeModeHandler } from '../../atom';
 
-const { useEffect, useCallback } = React;
+const { useEffect } = React;
 
 const Block = styled(animated.div)`
   border-radius: 1.5rem;
@@ -49,4 +49,4 @@ const ToggleThemeButton = () => {
   );
 };
 
-export default ToggleThemeButton;
+export default React.memo(ToggleThemeButton);

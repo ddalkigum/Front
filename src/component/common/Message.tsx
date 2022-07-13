@@ -32,11 +32,8 @@ const MessageArea = styled.div<{ isOpen; status }>`
   background: ${(props) =>
     props.status === 'success'
       ? props.theme.primary50
-      : props.theme.primaryRelatve70};
-  color: ${(props) =>
-    props.status === 'success'
-      ? props.theme.primaryText
-      : props.theme.primaryRelativeText};
+      : props.theme.primaryRelative70};
+  color: ${(props) => props.theme.primaryText};
   text-align: center;
   line-height: 2;
   white-space: pre-line;

@@ -13,6 +13,10 @@ const WriteArea = styled(ReactQuill)`
   height: 540px;
   max-width: 100%;
   margin-bottom: 2rem;
+
+  .ql-editor.ql-blank::before {
+    color: gray;
+  }
 `;
 
 const formats = [

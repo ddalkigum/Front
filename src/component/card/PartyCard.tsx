@@ -32,6 +32,10 @@ const InfoArea = styled.div`
 
 const TitleArea = styled.div`
   padding-bottom: 0.875rem;
+
+  h3 {
+    font-family: 'GmarketMedium';
+  }
 `;
 
 const BookArea = styled.div`

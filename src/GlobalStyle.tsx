@@ -49,10 +49,10 @@ table {
 }
 
 body {
-	font-family: GmarketMedium;
+	font-family: GmarketLight;
 
 	input {
-		font-family: GmarketMedium;
+		font-family: GmarketLight;
 	}
 }
 

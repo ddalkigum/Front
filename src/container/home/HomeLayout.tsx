@@ -10,6 +10,7 @@ import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
 import LeftArrow from '../../component/icon/LeftArrow';
 import RightArrow from '../../component/icon/RightArrow';
+import Category from '../../component/category/Category';
 
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -22,7 +23,7 @@ const Inner = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin: 0.2rem 0.5rem 0 0.5rem;
+  margin: 2rem 0.5rem 0 0.5rem;
   padding-bottom: 1.5rem;
 `;
 
@@ -138,6 +139,7 @@ const HomeLayout = () => {
 
   return (
     <Block>
+      {/* <Category /> */}
       <Inner ref={innerRef}>
         {isLoading
           ? Array.from({ length: 12 }).map((value, index) => {

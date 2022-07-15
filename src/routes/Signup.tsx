@@ -8,8 +8,6 @@ import {
   checkCertificationCodeResponse,
   signupResponse,
 } from '../lib/api/auth';
-import { mediaQuery } from '../lib/style/media';
-import { theme } from '../style/theme';
 import { handleAPI } from '../lib/api/common';
 import useSetMessage from '../lib/hooks/useSetMessage';
 
@@ -17,20 +15,13 @@ const { useState, useEffect } = React;
 
 const Block = styled.div`
   width: 500px;
+  max-width: 90%;
   height: 100%;
   margin: auto;
   margin-top: 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  ${mediaQuery(776)} {
-    margin-left: 1.5rem;
-  }
-`;
-
-const WelcomWord = styled.span`
-  font-size: 2.5rem;
 `;
 
 const SubTitle = styled.div`
@@ -118,7 +109,7 @@ const Signup = () => {
 
   useEffect(() => {
     const getEmailRequest = async (code: string) => {
-      const response = await checkCertificationCodeResponse(code);
+      const response = await handleAPI(checkCertificationCodeResponse(code));
       const { email } = response.result;
 
       if (response.result.message === 'DoesNotExistCertification') {
@@ -132,7 +123,7 @@ const Signup = () => {
         setPage(!isLoading);
       });
     }
-  }, ['']);
+  }, []);
 
   const signupRequest = async () => {
     const nickname = nicknameInput.current.value;
@@ -152,7 +143,10 @@ const Signup = () => {
         useSetMessage('error', '이미 존재하는 닉네임입니다', 'error');
         return;
       }
+      useSetMessage('error', '문제가 발생했습니다', 'error');
+      return;
     }
+
     const cleanUser = {
       id: response.result.id,
       nickname: response.result.nickname,
@@ -164,42 +158,37 @@ const Signup = () => {
   };
 
   return (
-    <>
-      <MainTemplate>
-        {isLoading ? (
-          <Block>
-            <WelcomWord>회원가입</WelcomWord>
-            <SubTitle>
-              <h2>정보를 입력해주세요</h2>
-            </SubTitle>
-            <SubTitle>
-              <h3>이메일</h3>
-            </SubTitle>
-            <EmailArea>
-              <span>{safeEmail}</span>
-            </EmailArea>
-            <SubTitle>
-              <h3>닉네임</h3>
-            </SubTitle>
-            <NicknameInputArea>
-              <input
-                type="text"
-                placeholder="닉네임을 입력해주세요."
-                ref={nicknameInput}
-              />
-            </NicknameInputArea>
-            <CheckSignupArea>
-              <RoundButton
-                color="blue"
-                size="LARGE"
-                text="회원가입"
-                onClick={signupRequest}
-              />
-            </CheckSignupArea>
-          </Block>
-        ) : null}
-      </MainTemplate>
-    </>
+    <MainTemplate>
+      {isLoading ? (
+        <Block>
+          <h1>회원가입</h1>
+          <SubTitle>
+            <h3>이메일</h3>
+          </SubTitle>
+          <EmailArea>
+            <span>{safeEmail}</span>
+          </EmailArea>
+          <SubTitle>
+            <h3>닉네임</h3>
+          </SubTitle>
+          <NicknameInputArea>
+            <input
+              type="text"
+              placeholder="닉네임을 입력해주세요."
+              ref={nicknameInput}
+            />
+          </NicknameInputArea>
+          <CheckSignupArea>
+            <RoundButton
+              color="blue"
+              size="LARGE"
+              text="회원가입"
+              onClick={signupRequest}
+            />
+          </CheckSignupArea>
+        </Block>
+      ) : null}
+    </MainTemplate>
   );
 };
 

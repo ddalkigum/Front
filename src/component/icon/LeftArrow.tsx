@@ -22,8 +22,8 @@ const LeftArrow = ({
 }: {
   className: string;
   size: string;
-  cursor: string;
-  onClick?: () => {};
+  cursor?: string;
+  onClick?: any;
 }) => {
   return (
     <Icon className={className} size={size} onClick={onClick} cursor={cursor} />

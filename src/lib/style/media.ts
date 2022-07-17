@@ -8,5 +8,6 @@ export const media = {
   large: mediaQuery(1200),
   medium: mediaQuery(1024),
   small: mediaQuery(768),
-  sxmall: mediaQuery(375),
+  xsmall: mediaQuery(480),
+  test: mediaQuery(550),
 };

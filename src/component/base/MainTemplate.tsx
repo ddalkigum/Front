@@ -15,18 +15,7 @@ const Block = styled.div`
   padding-bottom: 5rem;
   background-color: ${(props) => props.theme.mainBackground};
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  span,
-  p,
-  blockquote,
-  pre,
-  a,
-  strong {
+  * {
     color: ${(props) => props.theme.text};
   }
 `;

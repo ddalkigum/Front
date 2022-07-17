@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './component/error/NotFound';
+import Chat from './routes/Chat';
 import Detail from './routes/Detail';
 import Home from './routes/Home';
 import Notification from './routes/Notification';
@@ -15,6 +16,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/write" element={<Write />} />

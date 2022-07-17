@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { io } from 'socket.io-client';
 import { useSetRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
 import PartyCard from '../../component/card/PartyCard';
@@ -10,7 +10,6 @@ import { messageHandler } from '../../atom';
 import { handleAPI } from '../../lib/api/common';
 import LeftArrow from '../../component/icon/LeftArrow';
 import RightArrow from '../../component/icon/RightArrow';
-import Category from '../../component/category/Category';
 
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -78,6 +77,7 @@ export interface MainCard {
 }
 
 const ITEM_COUNT = 24;
+const socket = io('http://localhost:3002', { reconnection: false });
 
 const HomeLayout = () => {
   const [partyList, setPartyList] = useState<MainCard[]>([]);
